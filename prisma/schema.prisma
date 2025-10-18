@@ -76,7 +76,6 @@ model Verification {
   @@map("verification")
 }
 
-// Party Room Models
 model Room {
   id          String   @id @default(cuid())
   name        String
@@ -118,21 +117,19 @@ model Message {
   type      MessageType @default(TEXT)
   createdAt DateTime    @default(now())
 
-  // Relations
   room Room @relation(fields: [roomId], references: [id], onDelete: Cascade)
   user User @relation("MessageSender", fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("message")
 }
 
-// Game Models
 model Game {
   id          String   @id @default(cuid())
   name        String   @unique
   description String?
   minPlayers  Int      @default(2)
   maxPlayers  Int      @default(4)
-  gameType    String // e.g., "card", "board", "trivia", "word"
+  gameType    String
   isActive    Boolean  @default(true)
   createdAt   DateTime @default(now())
 
@@ -146,7 +143,7 @@ model GameSession {
   roomId     String
   gameId     String
   status     GameSessionStatus @default(WAITING)
-  gameData   Json? // Store game-specific state
+  gameData   Json?
   createdAt  DateTime          @default(now())
   startedAt  DateTime?
   finishedAt DateTime?
@@ -162,7 +159,7 @@ model GamePlayer {
   id            String   @id @default(cuid())
   gameSessionId String
   userId        String
-  playerNumber  Int // 1, 2, 3, 4, etc.
+  playerNumber  Int
   isReady       Boolean  @default(false)
   score         Int      @default(0)
   joinedAt      DateTime @default(now())
@@ -174,7 +171,6 @@ model GamePlayer {
   @@map("game_player")
 }
 
-// Enums
 enum RoomRole {
   OWNER
   MODERATOR
@@ -189,10 +185,10 @@ enum MessageType {
 }
 
 enum GameSessionStatus {
-  WAITING // Waiting for players to join/ready up
-  STARTING // Game is about to start
-  PLAYING // Game is in progress
-  PAUSED // Game is paused
-  FINISHED // Game has ended
-  CANCELLED // Game was cancelled
+  WAITING
+  STARTING
+  PLAYING
+  PAUSED
+  FINISHED
+  CANCELLED
 }
