@@ -18,6 +18,7 @@ export function SignOutButton() {
     } else {
       toast.success("Logged out successfully");
       router.push("/sign-in");
+      router.refresh();
     }
 
     setIsSubmitting(false);

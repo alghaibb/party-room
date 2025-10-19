@@ -12,8 +12,8 @@ export default async function Home() {
       <div className="flex min-h-screen items-center justify-center">
         <div className="space-y-6 text-center">
           <div>
-            <h1 className="mb-2 text-4xl font-bold text-white">Party Room</h1>
-            <p className="text-lg text-white/80">Real-time chat and gaming</p>
+            <h1 className="mb-2 text-4xl font-bold">Party Room</h1>
+            <p className="text-lg">Real-time chat and gaming</p>
           </div>
           <Button asChild size="lg">
             <Link href="/sign-in">Get Started</Link>
@@ -27,13 +27,11 @@ export default async function Home() {
     <div className="flex min-h-screen items-center justify-center">
       <div className="space-y-6 text-center">
         <div>
-          <h1 className="mb-2 text-4xl font-bold text-white">Party Room</h1>
-          <p className="text-white/80">
-            Welcome back, {user.displayUsername || user.name}!
-          </p>
+          <h1 className="mb-2 text-4xl font-bold">Party Room</h1>
+          <p>Welcome back, {user.displayUsername || user.name}!</p>
         </div>
         <div className="space-y-4">
-          <p className="text-white/80">
+          <p>
             Authentication system is ready. Chat and gaming features coming
             soon!
           </p>
