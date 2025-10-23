@@ -2,7 +2,6 @@
 
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import Link from "next/link";
 import { LoadingButton } from "@/components/LoadingButton";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -61,7 +60,7 @@ export function ForgotPasswordForm() {
             />
             {errors.email && <FieldError>{errors.email.message}</FieldError>}
             <FieldDescription>
-              We'll send you a password reset link if an account exists.
+              We&apos;ll send you a password reset link if an account exists.
             </FieldDescription>
           </Field>
 

@@ -3,8 +3,6 @@
 import {
   useForm,
   FormProvider,
-  UseFormRegister,
-  FieldErrors,
 } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
@@ -177,7 +175,7 @@ export function SignUpForm() {
               />
               {errors.email && <FieldError>{errors.email.message}</FieldError>}
               <FieldDescription>
-                We'll never share your email with anyone else.
+                We&apos;ll never share your email with anyone else.
               </FieldDescription>
             </Field>
 

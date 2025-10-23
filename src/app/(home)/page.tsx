@@ -35,7 +35,12 @@ export default async function Home() {
             Authentication system is ready. Chat and gaming features coming
             soon!
           </p>
-          <SignOutButton />
+          <div className="flex justify-center gap-4">
+            <Button asChild variant="outline">
+              <Link href="/dashboard/profile">Profile</Link>
+            </Button>
+            <SignOutButton />
+          </div>
         </div>
       </div>
     </div>

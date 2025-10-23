@@ -18,7 +18,7 @@ export default function VerifyEmailPage() {
           Verify your email
         </h1>
         <p className="text-muted-foreground text-sm">
-          We've sent a verification code to your email address
+          We&apos;ve sent a verification code to your email address
         </p>
       </div>
 

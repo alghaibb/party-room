@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 import { env } from "@/lib/env";
 import {
   Body,
