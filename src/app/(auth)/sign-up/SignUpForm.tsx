@@ -1,9 +1,6 @@
 "use client";
 
-import {
-  useForm,
-  FormProvider,
-} from "react-hook-form";
+import { useForm, FormProvider } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { LoadingButton } from "@/components/LoadingButton";

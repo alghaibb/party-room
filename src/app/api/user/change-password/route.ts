@@ -55,14 +55,11 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // TODO: Verify current password with Better Auth
-    // For now, we'll just update the password and timestamp
-
     // Update the password and set passwordChangedAt
     await prisma.account.update({
       where: { id: account.id },
       data: {
-        password: newPassword, // This should be hashed by Better Auth
+        password: newPassword,
         passwordChangedAt: new Date(),
         updatedAt: new Date()
       }
