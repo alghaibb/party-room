@@ -18,7 +18,12 @@ export default async function VerifyEmailPage() {
   const user = session?.user;
 
   if (user?.emailVerified) {
-    redirect("/dashboard");
+    // If email is verified but not onboarded, redirect to onboarding
+    if (!user.hasOnboarded) {
+      redirect("/onboarding");
+    }
+    // If already onboarded, redirect to home
+    redirect("/");
   }
 
   return (
@@ -39,7 +44,7 @@ export default async function VerifyEmailPage() {
             Verify your email
           </h1>
           <p className="text-muted-foreground text-lg">
-            We've sent a verification code to your email address
+            We&apos;ve sent a verification code to your email address
           </p>
         </div>
       </div>
@@ -53,7 +58,7 @@ export default async function VerifyEmailPage() {
 
         <div className="text-center space-y-3">
           <p className="text-sm text-muted-foreground">
-            Didn't receive the code?
+            Didn&apos;t receive the code?
           </p>
           <Button
             variant="link"

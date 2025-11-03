@@ -47,7 +47,7 @@ export function VerifyEmailForm() {
       toast.error(error.message);
     } else {
       toast.success("Email verified successfully! Welcome to Party Room!");
-      router.push(redirectTo ?? "/");
+      router.push(redirectTo ?? "/onboarding");
     }
   }
 
