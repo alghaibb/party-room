@@ -6,7 +6,11 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
 
-export function SignOutButton() {
+interface SignOutButtonProps {
+  className?: string;
+}
+
+export function SignOutButton({ className }: SignOutButtonProps) {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
 
@@ -29,6 +33,7 @@ export function SignOutButton() {
       onClick={onSignOut}
       loadingText="Signing out..."
       type="button"
+      className={className}
     >
       Sign out
     </LoadingButton>
