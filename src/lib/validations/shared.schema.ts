@@ -18,12 +18,6 @@ export const passwordSchema = z
   .max(255, "Password must be less than 255 characters")
   .trim();
 
-export const usernameSchema = z
-  .string()
-  .min(1, "Username is required")
-  .max(255, "Username must be less than 255 characters")
-  .trim();
-
 export const otpSchema = z
   .string()
   .min(6, "OTP must be 6 digits")
