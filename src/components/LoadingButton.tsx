@@ -25,7 +25,7 @@ export function LoadingButton({
       {isLoading ? (
         <>
           <Spinner />
-          {loadingText && <span className="ml-2">{loadingText}</span>}
+          {loadingText && <span>{loadingText}</span>}
         </>
       ) : (
         children

@@ -1,4 +1,3 @@
-
 generator client {
   provider = "prisma-client"
   output   = "../src/generated/prisma"
@@ -21,17 +20,26 @@ model User {
   sessions      Session[]
   accounts      Account[]
 
-  username            String?
-  displayUsername     String?
-  role                String?
-  banned              Boolean?  @default(false)
-  banReason           String?
-  banExpires          DateTime?
-  hasOnboarded        Boolean?  @default(false)
+  username        String?
+  displayUsername String?
+  role            String?
+  banned          Boolean?  @default(false)
+  banReason       String?
+  banExpires      DateTime?
+  hasOnboarded    Boolean?  @default(false)
+
+  // Gaming relationships
+  ownedRooms          PartyRoom[]       @relation("RoomOwner")
+  roomMemberships     RoomMember[]
+  gameResults         GameResult[]
+  sentFriendships     Friendship[]      @relation("FriendshipSender")
+  receivedFriendships Friendship[]      @relation("FriendshipReceiver")
+  achievements        UserAchievement[]
+  activities          UserActivity[]
 
   @@unique([email])
-  @@map("user")
   @@unique([username])
+  @@map("user")
 }
 
 model Session {
@@ -79,4 +87,150 @@ model Verification {
   updatedAt  DateTime @default(now()) @updatedAt
 
   @@map("verification")
+}
+
+// Gaming Models
+
+model PartyRoom {
+  id          String  @id @default(cuid())
+  name        String
+  description String?
+  code        String  @unique // 6-digit room code
+  isPublic    Boolean @default(true)
+  maxPlayers  Int     @default(8)
+  isActive    Boolean @default(true)
+
+  ownerId String
+  owner   User   @relation("RoomOwner", fields: [ownerId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  members      RoomMember[]
+  gameSessions GameSession[]
+
+  @@map("party_room")
+}
+
+model RoomMember {
+  id       String   @id @default(cuid())
+  userId   String
+  roomId   String
+  joinedAt DateTime @default(now())
+  isOnline Boolean  @default(true)
+
+  user User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  room PartyRoom @relation(fields: [roomId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, roomId])
+  @@map("room_member")
+}
+
+model Game {
+  id          String  @id @default(cuid())
+  name        String  @unique
+  description String
+  minPlayers  Int     @default(2)
+  maxPlayers  Int     @default(8)
+  category    String // "trivia", "drawing", "word", "strategy"
+  isActive    Boolean @default(true)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  gameSessions GameSession[]
+
+  @@map("game")
+}
+
+model GameSession {
+  id        String    @id @default(cuid())
+  roomId    String
+  gameId    String
+  status    String    @default("waiting") // "waiting", "playing", "completed", "cancelled"
+  startedAt DateTime?
+  endedAt   DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  room    PartyRoom    @relation(fields: [roomId], references: [id], onDelete: Cascade)
+  game    Game         @relation(fields: [gameId], references: [id], onDelete: Cascade)
+  results GameResult[]
+
+  @@map("game_session")
+}
+
+model GameResult {
+  id            String  @id @default(cuid())
+  userId        String
+  gameSessionId String
+  score         Int     @default(0)
+  won           Boolean @default(false)
+  position      Int? // 1st, 2nd, 3rd place
+
+  createdAt DateTime @default(now())
+
+  user        User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  gameSession GameSession @relation(fields: [gameSessionId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, gameSessionId])
+  @@map("game_result")
+}
+
+model Friendship {
+  id         String   @id @default(cuid())
+  senderId   String
+  receiverId String
+  status     String   @default("pending") // "pending", "accepted", "blocked"
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  sender   User @relation("FriendshipSender", fields: [senderId], references: [id], onDelete: Cascade)
+  receiver User @relation("FriendshipReceiver", fields: [receiverId], references: [id], onDelete: Cascade)
+
+  @@unique([senderId, receiverId])
+  @@map("friendship")
+}
+
+model Achievement {
+  id          String  @id @default(cuid())
+  name        String  @unique
+  description String
+  icon        String?
+  category    String // "games", "social", "competitive", "time"
+  requirement Int // threshold to unlock
+  isActive    Boolean @default(true)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  userAchievements UserAchievement[]
+
+  @@map("achievement")
+}
+
+model UserAchievement {
+  id            String   @id @default(cuid())
+  userId        String
+  achievementId String
+  unlockedAt    DateTime @default(now())
+
+  user        User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  achievement Achievement @relation(fields: [achievementId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, achievementId])
+  @@map("user_achievement")
+}
+
+model UserActivity {
+  id        String   @id @default(cuid())
+  userId    String
+  type      String // "room_joined", "game_played", "friend_added", "achievement_unlocked"
+  data      Json? // flexible data storage for activity details
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("user_activity")
 }

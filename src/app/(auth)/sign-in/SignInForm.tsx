@@ -66,7 +66,7 @@ export function SignInForm() {
       toast.error(error.message);
     } else {
       toast.success("Signed in successfully");
-      router.push(redirectTo ?? "/");
+      router.push(redirectTo ?? "/dashboard");
     }
   }
 
