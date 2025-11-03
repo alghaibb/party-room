@@ -31,24 +31,42 @@ export function SignInForm() {
   const form = useForm<SignInData>({
     resolver: zodResolver(signInSchema),
     defaultValues: {
-      email: "",
+      emailOrUsername: "",
       password: "",
       rememberMe: false,
     },
   });
 
   async function onSubmit(data: SignInData) {
-    const { error } = await authClient.signIn.email({
-      email: data.email,
-      password: data.password,
-      rememberMe: data.rememberMe,
-    });
+    // Determine if input is email or username
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const isEmail = emailRegex.test(data.emailOrUsername);
+
+    let error;
+
+    if (isEmail) {
+      // Use email sign-in
+      const result = await authClient.signIn.email({
+        email: data.emailOrUsername,
+        password: data.password,
+        rememberMe: data.rememberMe,
+      });
+      error = result.error;
+    } else {
+      // Use username sign-in
+      const result = await authClient.signIn.username({
+        username: data.emailOrUsername,
+        password: data.password,
+        rememberMe: data.rememberMe,
+      });
+      error = result.error;
+    }
 
     if (error) {
       toast.error(error.message);
     } else {
       toast.success("Signed in successfully");
-      router.push(redirectTo ?? "/dashboard");
+      router.push(redirectTo ?? "/");
     }
   }
 
@@ -59,12 +77,16 @@ export function SignInForm() {
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
         <FormField
           control={form.control}
-          name="email"
+          name="emailOrUsername"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Email</FormLabel>
+              <FormLabel>Email or Username</FormLabel>
               <FormControl>
-                <Input {...field} type="email" disabled={isLoading} />
+                <Input
+                  {...field}
+                  placeholder="Enter your email or username"
+                  disabled={isLoading}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
