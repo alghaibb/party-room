@@ -23,9 +23,6 @@ import {
   SidebarContent,
   SidebarFooter,
   SidebarHeader,
-  SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem,
 } from "@/components/ui/sidebar";
 import { User } from "@/lib/auth";
 import Link from "next/link";
@@ -43,56 +40,56 @@ const data = {
     },
     {
       title: "Party Rooms",
-      url: "/rooms",
+      url: "/dashboard/rooms",
       icon: IconHome,
     },
     {
       title: "Games",
-      url: "/games",
+      url: "/dashboard/games",
       icon: IconDeviceGamepad,
     },
     {
       title: "Friends",
-      url: "/friends",
+      url: "/dashboard/friends",
       icon: IconUsers,
     },
     {
       title: "Leaderboard",
-      url: "/leaderboard",
+      url: "/dashboard/leaderboard",
       icon: IconTrophy,
     },
   ],
   navSecondary: [
     {
       title: "Settings",
-      url: "/settings",
+      url: "/dashboard/settings",
       icon: IconSettings,
     },
     {
       title: "Get Help",
-      url: "/help",
+      url: "/dashboard/help",
       icon: IconHelp,
     },
     {
       title: "Search",
-      url: "/search",
+      url: "/dashboard/search",
       icon: IconSearch,
     },
   ],
   quickActions: [
     {
       name: "Create Room",
-      url: "/rooms/create",
+      url: "/dashboard/rooms/create",
       icon: IconHome,
     },
     {
       name: "Join Room",
-      url: "/rooms/join",
+      url: "", // Not used - handled by dialog
       icon: IconUserPlus,
     },
     {
       name: "Achievements",
-      url: "/achievements",
+      url: "/dashboard/achievements",
       icon: IconStar,
     },
   ],
@@ -102,27 +99,26 @@ export function AppSidebar({ user, ...props }: AppSidebarProps) {
   return (
     <Sidebar collapsible="offcanvas" {...props}>
       <SidebarHeader>
-        <SidebarMenu>
-          <SidebarMenuItem>
-            <SidebarMenuButton
-              asChild
-              className="data-[slot=sidebar-menu-button]:p-1.5!"
-            >
-              <Link href="/dashboard">
-                <div className="w-8 h-8 bg-primary rounded-xl flex items-center justify-center">
-                  <span className="text-primary-foreground font-bold text-sm">
-                    🎉
-                  </span>
-                </div>
-                <span className="text-base font-semibold">Party Room</span>
-              </Link>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
-        </SidebarMenu>
+        <div className="px-2 py-1.5">
+          <Link
+            href="/dashboard"
+            className="flex items-center gap-2 p-1.5 rounded-lg transition-colors"
+          >
+            <div className="w-8 h-8 bg-primary rounded-xl flex items-center justify-center">
+              <span className="text-primary-foreground font-bold text-sm">
+                🎉
+              </span>
+            </div>
+            <span className="text-base font-semibold">Party Room</span>
+          </Link>
+        </div>
       </SidebarHeader>
       <SidebarContent>
         <NavMain items={data.navMain} />
-        <NavDocuments items={data.quickActions} />
+        <NavDocuments
+          items={data.quickActions}
+          isVerified={user.emailVerified}
+        />
         <NavSecondary items={data.navSecondary} className="mt-auto" />
       </SidebarContent>
       <SidebarFooter>

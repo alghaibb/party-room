@@ -1,7 +1,9 @@
 import { getSession } from "@/lib/get-session";
 import prisma from "@/lib/prisma";
+import { cache } from "react";
+import { ROOM_CONSTANTS } from "@/constants/room";
 
-export async function getUserStats() {
+export const getUserStats = cache(async () => {
   try {
     const session = await getSession();
     if (!session?.user) {
@@ -53,8 +55,8 @@ export async function getUserStats() {
       }
     });
 
-    // Estimate hours played (assuming average 30 min per game)
-    const hoursPlayed = Math.round(gamesPlayed * 0.5); // 30 min average per game
+    // Estimate hours played using constant
+    const hoursPlayed = Math.round(gamesPlayed * (ROOM_CONSTANTS.AVERAGE_GAME_DURATION_MINUTES / 60));
 
     return {
       roomsJoined,
@@ -76,9 +78,9 @@ export async function getUserStats() {
       weeklyGames: 0,
     };
   }
-}
+});
 
-export async function getNavigationData() {
+export const getNavigationData = cache(async () => {
   try {
     const session = await getSession();
     if (!session?.user) {
@@ -99,4 +101,4 @@ export async function getNavigationData() {
     console.error("Error fetching navigation data:", error);
     return null;
   }
-}
+});
