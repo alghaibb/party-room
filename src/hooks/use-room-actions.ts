@@ -32,7 +32,7 @@ export function useRoomActions() {
     }
   };
 
-  const handleDeleteRoom = async (roomId: string) => {
+  const handleDeleteRoom = async (roomId: string, ownerName: string) => {
     setIsLoading(true);
 
     try {
@@ -43,7 +43,19 @@ export function useRoomActions() {
         return false;
       }
 
+      // Broadcast room deletion to all users in the room
+      const broadcastFn = (window as typeof window & { broadcastRoomDeleted?: (ownerName: string) => void }).broadcastRoomDeleted;
+      if (broadcastFn) {
+        broadcastFn(ownerName);
+      }
+
       toast.success(result.message);
+
+      // Navigate back to rooms list
+      setTimeout(() => {
+        window.location.href = "/dashboard/rooms";
+      }, 500);
+
       return true;
 
     } catch (error) {

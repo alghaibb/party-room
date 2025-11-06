@@ -50,6 +50,7 @@ export function RoomCard({
               roomName={room.name}
               roomCode={room.code}
               isOwner={isOwner}
+              ownerName={room.owner.name}
             />
           </div>
         </div>

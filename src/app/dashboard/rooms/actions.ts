@@ -246,6 +246,7 @@ export async function deleteRoom(roomId: string) {
     return {
       success: true,
       message: `Room "${room.name}" deleted successfully`,
+      roomId, // Return roomId so client can broadcast the deletion
     };
 
   } catch (error) {

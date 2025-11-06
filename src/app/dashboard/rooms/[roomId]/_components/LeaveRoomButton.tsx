@@ -59,7 +59,6 @@ export function LeaveRoomButton({ roomId, roomName }: LeaveRoomButtonProps) {
               isLoading={isLoading}
               loadingText="Leaving..."
               disabled={isLoading}
-              className="border border-input bg-background hover:bg-accent hover:text-accent-foreground"
             >
               Leave Room
             </LoadingButton>

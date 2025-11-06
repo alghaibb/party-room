@@ -28,6 +28,7 @@ interface RoomManagementDropdownProps {
   roomName: string;
   roomCode: string;
   isOwner: boolean;
+  ownerName: string;
 }
 
 export function RoomManagementDropdown({
@@ -35,6 +36,7 @@ export function RoomManagementDropdown({
   roomName,
   roomCode,
   isOwner,
+  ownerName,
 }: RoomManagementDropdownProps) {
   const { deleteRoomOpen, openDeleteRoom, closeDeleteRoom } = useModalStore();
   const { isLoading, handleDeleteRoom } = useRoomActions();
@@ -53,7 +55,7 @@ export function RoomManagementDropdown({
   };
 
   const handleDeleteConfirm = async () => {
-    const success = await handleDeleteRoom(roomId);
+    const success = await handleDeleteRoom(roomId, ownerName);
     if (success) {
       closeDeleteRoom();
     }
