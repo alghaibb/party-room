@@ -7,6 +7,12 @@ import { CreateRoomButton } from "./_components/CreateRoomButton";
 import { JoinRoomTrigger } from "../_components/JoinRoomTrigger";
 import { Suspense } from "react";
 import { RoomGridSkeleton } from "./_components/RoomGridSkeleton";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Party Rooms",
+  description: "Party Rooms",
+};
 
 export default async function RoomsPage() {
   const session = await getSession();

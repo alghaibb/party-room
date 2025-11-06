@@ -1,6 +1,12 @@
 import { SectionCards } from "./_components/SectionCards";
 import { SectionCardsSkeleton } from "./_components/SectionCardsSkeleton";
 import { Suspense } from "react";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Dashboard",
+  description: "Dashboard",
+};
 
 export default function DashboardPage() {
   return (

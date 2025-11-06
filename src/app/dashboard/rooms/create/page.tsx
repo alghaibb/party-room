@@ -9,6 +9,12 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Create Party Room",
+  description: "Create a new party room",
+};
 
 export default async function CreateRoomPage() {
   const session = await getSession();
