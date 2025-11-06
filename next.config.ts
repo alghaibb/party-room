@@ -10,7 +10,8 @@ const nextConfig: NextConfig = {
       config.plugins = [...config.plugins, new PrismaPlugin()];
     }
     return config;
-  }
+  },
+  turbopack: {}
 };
 
 export default nextConfig;
