@@ -3,6 +3,8 @@ import { getUserOnboardingData } from "@/app/onboarding/actions";
 import { OnboardingForm } from "./OnboardingForm";
 import { UserIcon, SparklesIcon, CheckCircleIcon } from "lucide-react";
 
+export const dynamic = "force-dynamic";
+
 export default async function OnboardingPage() {
   const userData = await getUserOnboardingData();
 

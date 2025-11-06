@@ -10,6 +10,8 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Metadata } from "next";
 import { isRedirectError } from "next/dist/client/components/redirect-error";
 
+export const dynamic = "force-dynamic";
+
 interface RoomPageProps {
   params: Promise<{
     roomId: string;

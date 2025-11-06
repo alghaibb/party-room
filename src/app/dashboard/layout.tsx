@@ -7,6 +7,8 @@ import { VerificationBanner } from "./_components/VerificationBanner";
 import { ModalProvider } from "@/providers/ModalProvider";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 
+export const dynamic = "force-dynamic";
+
 interface DashboardLayoutProps {
   children: ReactNode;
 }
