@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
@@ -44,7 +44,15 @@ export function JoinRoomTrigger({
   className,
 }: JoinRoomTriggerProps) {
   const [isOpen, setIsOpen] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
   const { isLoading, handleJoinRoom } = useRoomActions();
+
+  // Ensure Dialog only renders after hydration to avoid ID mismatches
+  useEffect(() => {
+    // Use setTimeout to defer setState and avoid React Compiler warning
+    const timer = setTimeout(() => setIsMounted(true), 0);
+    return () => clearTimeout(timer);
+  }, []);
 
   const form = useForm<JoinRoomData>({
     resolver: zodResolver(joinRoomSchema),
@@ -71,6 +79,22 @@ export function JoinRoomTrigger({
       form.reset();
     }
   };
+
+  // Render button only during SSR, full Dialog after client mount
+  if (!isMounted) {
+    return (
+      <Button
+        variant={variant}
+        size={size}
+        disabled={!isVerified}
+        title={!isVerified ? "Please verify your email to join rooms" : ""}
+        className={className}
+      >
+        <IconLogin className="w-4 h-4" />
+        Join Room
+      </Button>
+    );
+  }
 
   return (
     <Dialog open={isOpen} onOpenChange={handleOpenChange}>

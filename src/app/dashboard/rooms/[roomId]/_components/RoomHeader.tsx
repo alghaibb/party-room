@@ -66,6 +66,7 @@ export function RoomHeader({ room }: RoomHeaderProps) {
                 roomName={room.name}
                 roomCode={room.code}
                 isOwner={room.isOwner}
+                ownerName={room.owner.name}
               />
             ) : (
               <LeaveRoomButton roomId={room.id} roomName={room.name} />

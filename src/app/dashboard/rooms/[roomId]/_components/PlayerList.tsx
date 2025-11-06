@@ -1,8 +1,12 @@
+"use client";
+
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { IconUsers, IconCrown, IconCircle } from "@tabler/icons-react";
+import { useRoomPresence } from "@/hooks/use-room-presence";
 
 interface PlayerListProps {
+  roomId: string;
   members: Array<{
     id: string;
     userId: string;
@@ -11,6 +15,7 @@ interface PlayerListProps {
     user: {
       id: string;
       name: string;
+      displayUsername: string | null;
       username: string | null;
       image: string | null;
     };
@@ -18,21 +23,40 @@ interface PlayerListProps {
   owner: {
     id: string;
     name: string;
+    displayUsername: string | null;
     username: string | null;
     image: string | null;
   };
   maxPlayers: number;
   currentUserId: string;
+  currentUserName: string;
+  currentUserDisplayUsername: string;
 }
 
 export function PlayerList({
+  roomId,
   members,
   owner,
   maxPlayers,
   currentUserId,
+  currentUserName,
+  currentUserDisplayUsername,
 }: PlayerListProps) {
-  const onlineMembers = members.filter((member) => member.isOnline);
-  const offlineMembers = members.filter((member) => !member.isOnline);
+  const { onlineUsers } = useRoomPresence({
+    roomId,
+    userId: currentUserId,
+    userName: currentUserName,
+    displayUsername: currentUserDisplayUsername,
+  });
+
+  // Update members' online status based on presence
+  const updatedMembers = members.map((member) => ({
+    ...member,
+    isOnline: onlineUsers.some((u) => u.userId === member.userId),
+  }));
+
+  const onlineMembers = updatedMembers.filter((member) => member.isOnline);
+  const offlineMembers = updatedMembers.filter((member) => !member.isOnline);
 
   return (
     <Card className="h-full">
@@ -66,14 +90,16 @@ export function PlayerList({
                     <Avatar className="w-8 h-8">
                       <AvatarImage src={member.user.image || ""} />
                       <AvatarFallback className="text-sm">
-                        {member.user.name.charAt(0).toUpperCase()}
+                        {(member.user.displayUsername || member.user.name)
+                          .charAt(0)
+                          .toUpperCase()}
                       </AvatarFallback>
                     </Avatar>
 
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2">
                         <p className="text-sm font-medium truncate">
-                          {member.user.name}
+                          {member.user.displayUsername || member.user.name}
                           {isCurrentUser && (
                             <span className="text-muted-foreground">
                               {" "}
@@ -124,14 +150,16 @@ export function PlayerList({
                     <Avatar className="w-8 h-8 grayscale">
                       <AvatarImage src={member.user.image || ""} />
                       <AvatarFallback className="text-sm">
-                        {member.user.name.charAt(0).toUpperCase()}
+                        {(member.user.displayUsername || member.user.name)
+                          .charAt(0)
+                          .toUpperCase()}
                       </AvatarFallback>
                     </Avatar>
 
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2">
                         <p className="text-sm font-medium truncate">
-                          {member.user.name}
+                          {member.user.displayUsername || member.user.name}
                           {isCurrentUser && (
                             <span className="text-muted-foreground">
                               {" "}

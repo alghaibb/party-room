@@ -8,6 +8,7 @@ import { ChatArea } from "./_components/ChatArea";
 import { Suspense } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Metadata } from "next";
+import { isRedirectError } from "next/dist/client/components/redirect-error";
 
 interface RoomPageProps {
   params: Promise<{
@@ -62,13 +63,28 @@ export default async function RoomPage({ params }: RoomPageProps) {
   try {
     room = await getRoomDetails(roomId);
   } catch (error) {
-    // Handle room not found or access denied
+    // If it's a redirect error, let it propagate
+    if (isRedirectError(error)) {
+      throw error;
+    }
+    // Handle other errors
     console.error("Error fetching room details:", error);
     redirect("/dashboard/rooms");
   }
 
   const availableGames = await getAvailableGames();
-  const messages = await getRoomMessages(room.id);
+  const dbMessages = await getRoomMessages(room.id);
+
+  // Convert database messages to ChatMessage format
+  const initialMessages = dbMessages.map((msg) => ({
+    id: msg.id,
+    content: msg.content,
+    user: {
+      id: msg.user.id,
+      name: msg.user.name,
+    },
+    createdAt: msg.createdAt.toISOString(),
+  }));
 
   return (
     <div className="flex flex-1 flex-col h-full">
@@ -82,10 +98,34 @@ export default async function RoomPage({ params }: RoomPageProps) {
           <div className="flex-1">
             <Suspense fallback={<Skeleton className="h-64 rounded-lg" />}>
               <PlayerList
-                members={room.members}
-                owner={room.owner}
+                roomId={room.id}
+                members={room.members.map((m) => ({
+                  ...m,
+                  user: {
+                    ...m.user,
+                    displayUsername:
+                      (
+                        m.user as typeof m.user & {
+                          displayUsername: string | null;
+                        }
+                      ).displayUsername || m.user.name,
+                  },
+                }))}
+                owner={{
+                  ...room.owner,
+                  displayUsername:
+                    (
+                      room.owner as typeof room.owner & {
+                        displayUsername: string | null;
+                      }
+                    ).displayUsername || room.owner.name,
+                }}
                 maxPlayers={room.maxPlayers}
-                currentUserId={room.currentUserId}
+                currentUserId={session.user.id}
+                currentUserName={session.user.name}
+                currentUserDisplayUsername={
+                  session.user.displayUsername || session.user.name
+                }
               />
             </Suspense>
           </div>
@@ -106,8 +146,12 @@ export default async function RoomPage({ params }: RoomPageProps) {
               <ChatArea
                 roomId={room.id}
                 roomName={room.name}
-                currentUserId={room.currentUserId}
-                messages={messages}
+                currentUserId={session.user.id}
+                currentUserName={session.user.name}
+                currentUserDisplayUsername={
+                  session.user.displayUsername || session.user.name
+                }
+                initialMessages={initialMessages}
               />
             </Suspense>
           </div>
