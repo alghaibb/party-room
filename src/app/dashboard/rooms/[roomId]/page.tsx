@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
 import { getSession } from "@/lib/get-session";
-import { getRoomDetails, getAvailableGames } from "./data";
+import { getRoomDetails, getAvailableGames, getRoomMessages } from "./data";
 import { RoomHeader } from "./_components/RoomHeader";
 import { PlayerList } from "./_components/PlayerList";
 import { GameArea } from "./_components/GameArea";
@@ -37,6 +37,7 @@ export default async function RoomPage({ params }: RoomPageProps) {
   }
 
   const availableGames = await getAvailableGames();
+  const messages = await getRoomMessages(room.id);
 
   return (
     <div className="flex flex-1 flex-col h-full">
@@ -75,6 +76,7 @@ export default async function RoomPage({ params }: RoomPageProps) {
                 roomId={room.id}
                 roomName={room.name}
                 currentUserId={room.currentUserId}
+                messages={messages}
               />
             </Suspense>
           </div>
