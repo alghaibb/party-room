@@ -11,7 +11,10 @@ const nextConfig: NextConfig = {
     }
     return config;
   },
-  turbopack: {}
+  turbopack: {
+resolveAlias: {
+      "@/generated/prisma": "./src/generated/prisma",
+}
 };
 
 export default nextConfig;
