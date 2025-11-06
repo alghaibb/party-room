@@ -1,7 +1,8 @@
 import { getSession } from "@/lib/get-session";
 import prisma from "@/lib/prisma";
 import { cache } from "react";
-import { notFound } from "next/navigation";
+import { redirect } from "next/navigation";
+import { isRedirectError } from "next/dist/client/components/redirect-error";
 
 export const getRoomDetails = cache(async (roomId: string) => {
   try {
@@ -77,7 +78,7 @@ export const getRoomDetails = cache(async (roomId: string) => {
     });
 
     if (!room) {
-      notFound();
+      redirect("/dashboard/rooms");
     }
 
     // Check if user is a member of the room
@@ -129,8 +130,55 @@ export const getRoomDetails = cache(async (roomId: string) => {
     };
 
   } catch (error) {
+    if (isRedirectError(error)) throw error;
     console.error("Error fetching room details:", error);
     throw error;
+  }
+});
+
+export const getRoomMessages = cache(async (roomId: string) => {
+  try {
+    const session = await getSession();
+    if (!session?.user) {
+      throw new Error("Not authenticated");
+    }
+
+    const messages = await prisma.message.findMany({
+      where: { roomId },
+      include: {
+        user: {
+          select: {
+            id: true,
+            name: true,
+            displayUsername: true,
+            username: true,
+            image: true,
+          },
+        },
+      },
+      orderBy: {
+        createdAt: "asc",
+      },
+      take: 50, // Last 50 messages
+    });
+
+    return messages.map(message => ({
+      id: message.id,
+      content: message.content,
+      userId: message.userId,
+      roomId: message.roomId,
+      createdAt: message.createdAt,
+      user: {
+        id: message.user.id,
+        name: message.user.displayUsername || message.user.name,
+        username: message.user.username,
+        image: message.user.image,
+      },
+    }));
+
+  } catch (error) {
+    console.error("Error fetching room messages:", error);
+    return [];
   }
 });
 
