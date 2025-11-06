@@ -14,7 +14,7 @@ const nextConfig: NextConfig = {
   turbopack: {
 resolveAlias: {
       "@/generated/prisma": "./src/generated/prisma",
+},
 }
-};
 
 export default nextConfig;
