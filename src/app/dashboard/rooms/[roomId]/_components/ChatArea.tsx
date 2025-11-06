@@ -47,6 +47,13 @@ export function ChatArea({
       onMessage: onMessageSent,
     });
 
+  const { containerRef, scrollToBottom } = useChatScroll();
+
+  // Auto-scroll when new messages arrive
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages, scrollToBottom]);
+
   // Expose broadcastRoomDeleted to parent via window for RoomManagementDropdown
   useEffect(() => {
     (
@@ -62,8 +69,6 @@ export function ChatArea({
       ).broadcastRoomDeleted;
     };
   }, [broadcastRoomDeleted]);
-
-  const messagesEndRef = useChatScroll(messages);
 
   const handleSendMessage = async () => {
     if (!messageInput.trim() || !isConnected) return;
@@ -109,7 +114,7 @@ export function ChatArea({
       <CardContent className="flex-1 flex flex-col gap-4 min-h-0">
         {/* Messages Area */}
         <div
-          ref={messagesEndRef}
+          ref={containerRef}
           className="flex-1 space-y-1 overflow-y-auto min-h-0 pr-2"
         >
           {messages.length === 0 ? (

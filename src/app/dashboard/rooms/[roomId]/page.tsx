@@ -136,14 +136,14 @@ export default async function RoomPage({ params }: RoomPageProps) {
         {/* Right Column - Game Area & Chat */}
         <div className="flex-1 flex flex-col gap-4 min-h-0">
           {/* Game Area */}
-          <div className="flex-1">
+          <div className="flex-1 min-h-64">
             <Suspense fallback={<Skeleton className="h-96 rounded-lg" />}>
               <GameArea room={room} availableGames={availableGames} />
             </Suspense>
           </div>
 
-          {/* Chat Area */}
-          <div className="h-80 lg:h-64">
+          {/* Chat Area - Bigger and responsive */}
+          <div className="h-[500px] md:h-[600px] lg:flex-1 lg:min-h-[400px]">
             <Suspense fallback={<Skeleton className="h-full rounded-lg" />}>
               <ChatArea
                 roomId={room.id}
