@@ -15,8 +15,8 @@ export const auth = betterAuth({
         type: "boolean",
         default: false,
         required: false,
-      }
-    }
+      },
+    },
   },
   emailAndPassword: {
     enabled: true,

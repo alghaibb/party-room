@@ -31,7 +31,9 @@ export function useRealtimeChat({
   initialMessages = [],
   onMessage,
 }: UseRealtimeChatProps) {
-  const [messages, setMessages] = useState<ChatMessage[]>(() => initialMessages);
+  const [messages, setMessages] = useState<ChatMessage[]>(
+    () => initialMessages
+  );
   const [isConnected, setIsConnected] = useState(false);
   const [roomDeleted, setRoomDeleted] = useState(false);
   const channelRef = useRef<RealtimeChannel | null>(null);
@@ -156,7 +158,13 @@ export function useRealtimeChat({
   }, [roomId, userId, userName, displayUsername, onMessage]);
 
   const sendMessage = useCallback(
-    async (content: string, saveToDb?: (roomId: string, content: string) => Promise<{ success: boolean; error?: string }>) => {
+    async (
+      content: string,
+      saveToDb?: (
+        roomId: string,
+        content: string
+      ) => Promise<{ success: boolean; error?: string }>
+    ) => {
       const channel = channelRef.current;
       if (!channel || !isConnected || !content.trim()) return;
 
@@ -170,22 +178,28 @@ export function useRealtimeChat({
         createdAt: new Date().toISOString(),
       };
 
-      // Save to database if handler provided
-      if (saveToDb) {
-        try {
-          await saveToDb(roomId, content.trim());
-        } catch (error) {
-          console.error("Failed to save message:", error);
-        }
-      }
+      // Optimistic update: Add message to UI immediately
+      setMessages((prev) => {
+        const updated = [...prev, message];
+        onMessage?.(updated);
+        return updated;
+      });
 
+      // Broadcast to other users immediately (non-blocking)
       channel.send({
         type: "broadcast",
         event: "message",
         payload: message,
       });
+
+      // Save to database in the background (don't await)
+      if (saveToDb) {
+        saveToDb(roomId, content.trim()).catch((error) => {
+          console.error("Failed to save message:", error);
+        });
+      }
     },
-    [isConnected, userId, userName, displayUsername, roomId]
+    [isConnected, userId, userName, displayUsername, roomId, onMessage]
   );
 
   const broadcastRoomDeleted = useCallback(
@@ -210,4 +224,3 @@ export function useRealtimeChat({
     roomDeleted,
   };
 }
-

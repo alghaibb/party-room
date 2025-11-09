@@ -1,4 +1,4 @@
-import { ReactNode } from "react";
+import { ReactNode, Suspense } from "react";
 import { redirect } from "next/navigation";
 import { getSession } from "@/lib/get-session";
 import { AppSidebar } from "./_components/AppSidebar";
@@ -25,7 +25,7 @@ export default async function DashboardLayout({
   }
 
   // Allow unverified users but still require onboarding
-  if (user.emailVerified && !user.hasOnboarded) {
+  if (user.emailVerified && user.hasOnboarded === false) {
     redirect("/onboarding");
   }
 
@@ -38,7 +38,9 @@ export default async function DashboardLayout({
         } as React.CSSProperties
       }
     >
-      <AppSidebar variant="inset" user={user} />
+      <Suspense fallback={null}>
+        <AppSidebar variant="inset" user={user} />
+      </Suspense>
       <SidebarInset>
         <SiteHeader />
         {!user.emailVerified && <VerificationBanner userEmail={user.email} />}

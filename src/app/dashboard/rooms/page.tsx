@@ -1,17 +1,15 @@
 import { redirect } from "next/navigation";
 import { getSession } from "@/lib/get-session";
-import { RoomGrid } from "./_components/RoomGrid";
-import { RoomStats } from "./_components/RoomStats";
-import { UserRooms } from "./_components/UserRooms";
+import { RoomsContent } from "./_components/RoomsContent";
 import { CreateRoomButton } from "./_components/CreateRoomButton";
 import { JoinRoomTrigger } from "../_components/JoinRoomTrigger";
+import { Metadata } from "next";
 import { Suspense } from "react";
 import { RoomGridSkeleton } from "./_components/RoomGridSkeleton";
-import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Party Rooms",
-  description: "Party Rooms",
+  title: "Rooms",
+  description: "Rooms",
 };
 
 export default async function RoomsPage() {
@@ -30,7 +28,6 @@ export default async function RoomsPage() {
   return (
     <div className="flex flex-1 flex-col">
       <div className="@container/main flex flex-1 flex-col gap-6 p-4 md:p-6">
-        {/* Page Header */}
         <div className="flex flex-col gap-4">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div className="space-y-2 min-w-0 flex-1">
@@ -46,39 +43,21 @@ export default async function RoomsPage() {
           </div>
         </div>
 
-        {/* Room Statistics */}
         <Suspense
-          fallback={<div className="h-20 animate-pulse bg-muted rounded-lg" />}
+          fallback={
+            <>
+              <div className="h-20 animate-pulse bg-muted rounded-lg" />
+              <div className="space-y-4">
+                <div className="h-32 animate-pulse bg-muted rounded-lg" />
+              </div>
+              <div className="space-y-4">
+                <RoomGridSkeleton />
+              </div>
+            </>
+          }
         >
-          <RoomStats />
+          <RoomsContent />
         </Suspense>
-
-        {/* User's Recent Rooms */}
-        <div className="space-y-4">
-          <div className="flex items-center justify-between">
-            <h2 className="text-lg font-semibold">Your Recent Rooms</h2>
-          </div>
-          <Suspense
-            fallback={
-              <div className="h-32 animate-pulse bg-muted rounded-lg" />
-            }
-          >
-            <UserRooms />
-          </Suspense>
-        </div>
-
-        {/* Active Public Rooms */}
-        <div className="space-y-4">
-          <div className="flex items-center justify-between">
-            <h2 className="text-lg font-semibold">Active Rooms</h2>
-            <p className="text-sm text-muted-foreground">
-              Join any public room to start playing
-            </p>
-          </div>
-          <Suspense fallback={<RoomGridSkeleton />}>
-            <RoomGrid />
-          </Suspense>
-        </div>
       </div>
     </div>
   );
