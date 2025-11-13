@@ -112,6 +112,8 @@ model PartyRoom {
   gameSessions GameSession[]
   messages     Message[]
 
+  @@index([isActive, isPublic])
+  @@index([ownerId])
   @@map("party_room")
 }
 
@@ -126,6 +128,9 @@ model RoomMember {
   room PartyRoom @relation(fields: [roomId], references: [id], onDelete: Cascade)
 
   @@unique([userId, roomId])
+  @@index([userId])
+  @@index([roomId])
+  @@index([isOnline])
   @@map("room_member")
 }
 
@@ -161,6 +166,8 @@ model GameSession {
   game    Game         @relation(fields: [gameId], references: [id], onDelete: Cascade)
   results GameResult[]
 
+  @@index([roomId, status])
+  @@index([status])
   @@map("game_session")
 }
 
@@ -178,6 +185,10 @@ model GameResult {
   gameSession GameSession @relation(fields: [gameSessionId], references: [id], onDelete: Cascade)
 
   @@unique([userId, gameSessionId])
+  @@index([userId])
+  @@index([userId, won])
+  @@index([userId, createdAt])
+  @@index([gameSessionId])
   @@map("game_result")
 }
 
@@ -193,6 +204,8 @@ model Friendship {
   receiver User @relation("FriendshipReceiver", fields: [receiverId], references: [id], onDelete: Cascade)
 
   @@unique([senderId, receiverId])
+  @@index([senderId, status])
+  @@index([receiverId, status])
   @@map("friendship")
 }
 
@@ -249,5 +262,7 @@ model Message {
   user User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   room PartyRoom @relation(fields: [roomId], references: [id], onDelete: Cascade)
 
+  @@index([roomId, createdAt])
+  @@index([userId])
   @@map("message")
 }
