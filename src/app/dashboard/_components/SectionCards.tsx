@@ -19,7 +19,7 @@ import {
 import { useUserStats } from "@/hooks/queries/use-user-stats";
 
 export function SectionCards() {
-  const { data: stats, isPending } = useUserStats();
+  const { data: stats } = useUserStats();
 
   const formatNumber = (num: number) => {
     return new Intl.NumberFormat().format(num);
@@ -31,8 +31,8 @@ export function SectionCards() {
     return "text-red-600";
   };
 
-  // Only show loader if there's truly no data (first load)
-  if (isPending && !stats) {
+  // Show loader only when there's no cached data (first load)
+  if (stats === undefined) {
     return (
       <div className="*:data-[slot=card]:from-primary/5 *:data-[slot=card]:to-card dark:*:data-[slot=card]:bg-card grid grid-cols-1 gap-4 px-4 *:data-[slot=card]:bg-linear-to-t *:data-[slot=card]:shadow-xs lg:px-6 @xl/main:grid-cols-2 @5xl/main:grid-cols-4">
         {Array.from({ length: 4 }).map((_, i) => (

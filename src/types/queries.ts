@@ -88,8 +88,29 @@ export interface RoomDetails {
   currentGame: {
     id: string;
     status: string;
-    game: unknown;
-    results: unknown[];
+    game: {
+      id: string;
+      name: string;
+      description: string;
+      minPlayers: number;
+      maxPlayers: number;
+      category: string;
+    };
+    results: Array<{
+      id: string;
+      userId: string;
+      gameSessionId: string;
+      score: number;
+      won: boolean;
+      position: number | null;
+      createdAt: Date;
+      user: {
+        id: string;
+        name: string;
+        displayUsername: string | null;
+        username: string | null;
+      };
+    }>;
     startedAt: Date | null;
   } | null;
   memberCount: number;

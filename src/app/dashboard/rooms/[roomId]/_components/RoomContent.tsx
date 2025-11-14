@@ -8,8 +8,7 @@ import { ChatArea } from "./ChatArea";
 import { useRoomDetails } from "@/hooks/queries/use-room-details";
 import { useRoomMessages } from "@/hooks/queries/use-room-messages";
 import { useAvailableGames } from "@/hooks/queries/use-available-games";
-import { Skeleton } from "@/components/ui/skeleton";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 
 interface RoomContentProps {
   roomId: string;
@@ -33,22 +32,26 @@ export function RoomContent({ roomId }: RoomContentProps) {
   });
 
   // Show loader only when there's no cached data (first load)
-  if (room === undefined || availableGames === undefined || session === undefined) {
+  if (
+    room === undefined ||
+    availableGames === undefined ||
+    session === undefined
+  ) {
     return (
       <div className="flex flex-1 flex-col lg:flex-row gap-6 p-4 md:p-6 h-full min-h-0">
         <div className="lg:w-80 flex flex-col gap-4">
           <Card>
-            <CardContent className="space-y-3 pt-6">
-              <Skeleton className="h-6 w-32" />
-              <Skeleton className="h-4 w-24" />
-            </CardContent>
+            <CardHeader className="space-y-3">
+              <div className="h-6 w-32 bg-muted animate-pulse rounded" />
+              <div className="h-4 w-24 bg-muted animate-pulse rounded" />
+            </CardHeader>
           </Card>
           <Card>
             <CardContent className="space-y-3 pt-6">
               {Array.from({ length: 4 }).map((_, i) => (
                 <div key={i} className="flex items-center gap-2">
-                  <Skeleton className="w-8 h-8 rounded-full" />
-                  <Skeleton className="h-4 w-32" />
+                  <div className="w-8 h-8 bg-muted animate-pulse rounded-full" />
+                  <div className="h-4 w-32 bg-muted animate-pulse rounded" />
                 </div>
               ))}
             </CardContent>
@@ -58,7 +61,7 @@ export function RoomContent({ roomId }: RoomContentProps) {
         <div className="flex-1 flex flex-col gap-4 min-h-0">
           <Card className="flex-1">
             <CardContent className="pt-6">
-              <Skeleton className="h-64 w-full" />
+              <div className="h-64 w-full bg-muted animate-pulse rounded" />
             </CardContent>
           </Card>
         </div>
@@ -69,15 +72,15 @@ export function RoomContent({ roomId }: RoomContentProps) {
               <div className="flex-1 space-y-3">
                 {Array.from({ length: 5 }).map((_, i) => (
                   <div key={i} className="flex gap-2">
-                    <Skeleton className="w-8 h-8 rounded-full" />
+                    <div className="w-8 h-8 bg-muted animate-pulse rounded-full" />
                     <div className="flex-1 space-y-1">
-                      <Skeleton className="h-3 w-20" />
-                      <Skeleton className="h-4 w-full" />
+                      <div className="h-3 w-20 bg-muted animate-pulse rounded" />
+                      <div className="h-4 w-full bg-muted animate-pulse rounded" />
                     </div>
                   </div>
                 ))}
               </div>
-              <Skeleton className="h-10 w-full mt-4" />
+              <div className="h-10 w-full mt-4 bg-muted animate-pulse rounded" />
             </CardContent>
           </Card>
         </div>
@@ -118,8 +121,11 @@ export function RoomContent({ roomId }: RoomContentProps) {
             owner={{
               ...room.owner,
               displayUsername:
-                (room.owner as typeof room.owner & { displayUsername: string | null })
-                  .displayUsername || room.owner.name,
+                (
+                  room.owner as typeof room.owner & {
+                    displayUsername: string | null;
+                  }
+                ).displayUsername || room.owner.name,
             }}
             maxPlayers={room.maxPlayers}
             currentUserId={session.user.id}
