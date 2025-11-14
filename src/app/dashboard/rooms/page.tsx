@@ -1,35 +1,14 @@
 import { redirect } from "next/navigation";
-import { Suspense } from "react";
 import { getSession } from "@/lib/get-session";
 import { RoomsContent } from "./_components/RoomsContent";
 import { CreateRoomButton } from "./_components/CreateRoomButton";
 import { JoinRoomTrigger } from "../_components/JoinRoomTrigger";
-import { RoomGridSkeleton } from "./_components/RoomGridSkeleton";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Rooms",
   description: "Rooms",
 };
-
-function RoomsContentSkeleton() {
-  return (
-    <>
-      {/* Room Stats Skeleton */}
-      <div className="h-20 animate-pulse bg-muted rounded-lg" />
-
-      {/* User Rooms Skeleton */}
-      <div className="space-y-4">
-        <div className="h-32 animate-pulse bg-muted rounded-lg" />
-      </div>
-
-      {/* Available Rooms Grid Skeleton */}
-      <div className="space-y-4">
-        <RoomGridSkeleton />
-      </div>
-    </>
-  );
-}
 
 export default async function RoomsPage() {
   const session = await getSession();
@@ -62,9 +41,7 @@ export default async function RoomsPage() {
           </div>
         </div>
 
-        <Suspense fallback={<RoomsContentSkeleton />}>
-          <RoomsContent />
-        </Suspense>
+        <RoomsContent />
       </div>
     </div>
   );
