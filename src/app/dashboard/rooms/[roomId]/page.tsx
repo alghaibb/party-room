@@ -4,8 +4,6 @@ import { RoomContent } from "./_components/RoomContent";
 import { getRoomDetails } from "./data";
 import { Metadata } from "next";
 
-export const dynamic = "force-dynamic";
-
 interface RoomPageProps {
   params: Promise<{
     roomId: string;

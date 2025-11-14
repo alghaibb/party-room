@@ -1,4 +1,6 @@
-import { getUserRooms } from "../data";
+"use client";
+
+import { useUserRooms } from "@/hooks/queries/use-user-rooms";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -6,8 +8,25 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { IconCrown, IconUsers } from "@tabler/icons-react";
 
-export async function UserRooms() {
-  const userRooms = await getUserRooms();
+export function UserRooms() {
+  const { data: userRooms } = useUserRooms();
+
+  // Show loader only when there's no cached data (first load)
+  if (userRooms === undefined) {
+    return (
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+        {Array.from({ length: 3 }).map((_, i) => (
+          <Card key={i} className="animate-pulse">
+            <CardContent className="p-4">
+              <div className="h-4 w-32 bg-muted rounded mb-2" />
+              <div className="h-3 w-24 bg-muted rounded mb-4" />
+              <div className="h-8 w-full bg-muted rounded" />
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+    );
+  }
 
   if (userRooms.length === 0) {
     return (

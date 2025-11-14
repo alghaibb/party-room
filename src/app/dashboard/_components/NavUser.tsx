@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import {
   IconCreditCard,
   IconDotsVertical,
@@ -32,6 +33,39 @@ interface NavUserProps {
 
 export function NavUser({ user }: NavUserProps) {
   const { isMobile } = useSidebar();
+  const [isMounted, setIsMounted] = useState(false);
+
+  // Ensure DropdownMenu only renders after hydration to avoid ID mismatches
+  useEffect(() => {
+    // Use setTimeout to defer setState and avoid React Compiler warning
+    const timer = setTimeout(() => setIsMounted(true), 0);
+    return () => clearTimeout(timer);
+  }, []);
+
+  // Render button only during SSR, full DropdownMenu after client mount
+  if (!isMounted) {
+    return (
+      <SidebarMenu>
+        <SidebarMenuItem>
+          <SidebarMenuButton size="lg">
+            <Avatar className="h-8 w-8 rounded-lg">
+              <AvatarImage src={user.image ?? ""} alt={user.name} />
+              <AvatarFallback className="rounded-lg">
+                {user.name.charAt(0).toUpperCase()}
+              </AvatarFallback>
+            </Avatar>
+            <div className="grid flex-1 text-left text-sm leading-tight">
+              <span className="truncate font-medium">{user.name}</span>
+              <span className="text-muted-foreground truncate text-xs">
+                {user.email}
+              </span>
+            </div>
+            <IconDotsVertical className="ml-auto size-4" />
+          </SidebarMenuButton>
+        </SidebarMenuItem>
+      </SidebarMenu>
+    );
+  }
 
   return (
     <SidebarMenu>

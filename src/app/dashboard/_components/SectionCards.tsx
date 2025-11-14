@@ -1,3 +1,5 @@
+"use client";
+
 import {
   IconTrophy,
   IconClock,
@@ -14,10 +16,10 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { getUserStats } from "../data";
+import { useUserStats } from "@/hooks/queries/use-user-stats";
 
-export async function SectionCards() {
-  const stats = await getUserStats();
+export function SectionCards() {
+  const { data: stats, isPending } = useUserStats();
 
   const formatNumber = (num: number) => {
     return new Intl.NumberFormat().format(num);
@@ -28,6 +30,22 @@ export async function SectionCards() {
     if (winRate >= 50) return "text-yellow-600";
     return "text-red-600";
   };
+
+  // Only show loader if there's truly no data (first load)
+  if (isPending && !stats) {
+    return (
+      <div className="*:data-[slot=card]:from-primary/5 *:data-[slot=card]:to-card dark:*:data-[slot=card]:bg-card grid grid-cols-1 gap-4 px-4 *:data-[slot=card]:bg-linear-to-t *:data-[slot=card]:shadow-xs lg:px-6 @xl/main:grid-cols-2 @5xl/main:grid-cols-4">
+        {Array.from({ length: 4 }).map((_, i) => (
+          <Card key={i} className="@container/card">
+            <CardHeader>
+              <div className="h-4 w-24 bg-muted animate-pulse rounded" />
+              <div className="h-8 w-16 bg-muted animate-pulse rounded mt-2" />
+            </CardHeader>
+          </Card>
+        ))}
+      </div>
+    );
+  }
 
   return (
     <div className="*:data-[slot=card]:from-primary/5 *:data-[slot=card]:to-card dark:*:data-[slot=card]:bg-card grid grid-cols-1 gap-4 px-4 *:data-[slot=card]:bg-linear-to-t *:data-[slot=card]:shadow-xs lg:px-6 @xl/main:grid-cols-2 @5xl/main:grid-cols-4">

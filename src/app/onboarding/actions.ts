@@ -6,60 +6,6 @@ import prisma from "@/lib/prisma";
 import { put } from "@vercel/blob";
 import { revalidatePath } from "next/cache";
 
-export async function checkUsernameAvailability(username: string) {
-  try {
-    if (!username) {
-      return {
-        available: false,
-        message: "Username parameter is required",
-      };
-    }
-
-    // Validate username format (same as schema)
-    const usernameRegex = /^[a-zA-Z0-9_-]+$/;
-    if (!usernameRegex.test(username)) {
-      return {
-        available: false,
-        message: "Username can only contain letters, numbers, underscores, and hyphens",
-      };
-    }
-
-    if (username.length < 3 || username.length > 20) {
-      return {
-        available: false,
-        message: "Username must be between 3 and 20 characters",
-      };
-    }
-
-    // Check if username exists in database (case-insensitive)
-    const existingUser = await prisma.user.findFirst({
-      where: {
-        username: {
-          equals: username.toLowerCase(),
-          mode: 'insensitive'
-        }
-      },
-      select: {
-        id: true
-      }
-    });
-
-    const available = !existingUser;
-
-    return {
-      available,
-      message: available ? "Username is available" : "Username is already taken",
-    };
-
-  } catch (error) {
-    console.error("Error checking username availability:", error);
-    return {
-      available: false,
-      message: "Failed to check username availability",
-    };
-  }
-}
-
 export async function completeOnboarding(formData: FormData) {
   try {
     // Check if user is authenticated
@@ -183,6 +129,60 @@ export async function completeOnboarding(formData: FormData) {
   }
 }
 
+export async function checkUsernameAvailability(username: string) {
+  try {
+    if (!username) {
+      return {
+        available: false,
+        message: "Username parameter is required",
+      };
+    }
+
+    // Validate username format (same as schema)
+    const usernameRegex = /^[a-zA-Z0-9_-]+$/;
+    if (!usernameRegex.test(username)) {
+      return {
+        available: false,
+        message: "Username can only contain letters, numbers, underscores, and hyphens",
+      };
+    }
+
+    if (username.length < 3 || username.length > 20) {
+      return {
+        available: false,
+        message: "Username must be between 3 and 20 characters",
+      };
+    }
+
+    // Check if username exists in database (case-insensitive)
+    const existingUser = await prisma.user.findFirst({
+      where: {
+        username: {
+          equals: username.toLowerCase(),
+          mode: 'insensitive'
+        }
+      },
+      select: {
+        id: true
+      }
+    });
+
+    const available = !existingUser;
+
+    return {
+      available,
+      message: available ? "Username is available" : "Username is already taken",
+    };
+
+  } catch (error) {
+    console.error("Error checking username availability:", error);
+    return {
+      available: false,
+      message: "Failed to check username availability",
+    };
+  }
+}
+
 export async function getUserOnboardingData() {
   try {
     const session = await getSession();
@@ -202,3 +202,4 @@ export async function getUserOnboardingData() {
     return null;
   }
 }
+

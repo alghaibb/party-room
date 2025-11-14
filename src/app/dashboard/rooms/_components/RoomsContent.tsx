@@ -1,8 +1,10 @@
+"use client";
+
 import { RoomGrid } from "./RoomGrid";
 import { RoomStats } from "./RoomStats";
 import { UserRooms } from "./UserRooms";
 
-export async function RoomsContent() {
+export function RoomsContent() {
   return (
     <>
       <RoomStats />
