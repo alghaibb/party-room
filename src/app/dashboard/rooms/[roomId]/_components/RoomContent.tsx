@@ -1,6 +1,5 @@
 "use client";
 
-import { useQuery } from "@tanstack/react-query";
 import { RoomHeader } from "./RoomHeader";
 import { PlayerList } from "./PlayerList";
 import { GameArea } from "./GameArea";
@@ -8,28 +7,20 @@ import { ChatArea } from "./ChatArea";
 import { useRoomDetails } from "@/hooks/queries/use-room-details";
 import { useRoomMessages } from "@/hooks/queries/use-room-messages";
 import { useAvailableGames } from "@/hooks/queries/use-available-games";
+import { useSession } from "@/hooks/queries/use-session";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { RoomEventsProvider } from "@/contexts/room-events-context";
+import { useCallback } from "react";
 
 interface RoomContentProps {
   roomId: string;
-}
-
-async function fetchSession() {
-  const response = await fetch("/api/auth/session");
-  if (!response.ok) return null;
-  return response.json();
 }
 
 export function RoomContent({ roomId }: RoomContentProps) {
   const { data: room } = useRoomDetails(roomId);
   const { data: availableGames } = useAvailableGames();
   const { data: dbMessages } = useRoomMessages(roomId);
-  const { data: session } = useQuery({
-    queryKey: ["session"],
-    queryFn: fetchSession,
-    staleTime: 5 * 60 * 1000, // 5 minutes
-    refetchOnMount: false,
-  });
+  const { data: session } = useSession();
 
   // Show loader only when there's no cached data (first load)
   if (

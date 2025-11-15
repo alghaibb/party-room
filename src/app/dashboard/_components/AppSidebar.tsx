@@ -12,6 +12,7 @@ import {
   IconSearch,
   IconHome,
   IconStar,
+  IconSparkles,
 } from "@tabler/icons-react";
 
 import { NavDocuments } from "./NavDocuments";
@@ -111,7 +112,11 @@ export function AppSidebar({ user, ...props }: AppSidebarProps) {
   };
 
   return (
-    <Sidebar collapsible="offcanvas" {...props} className="border-r border-foreground/5 bg-background/30 backdrop-blur-xl">
+    <Sidebar
+      collapsible="offcanvas"
+      {...props}
+      className="border-r border-foreground/5 bg-background/30 backdrop-blur-xl"
+    >
       <SidebarHeader className="border-b border-foreground/5 p-4">
         <div className="px-2">
           <Link
@@ -121,13 +126,14 @@ export function AppSidebar({ user, ...props }: AppSidebarProps) {
           >
             <div className="relative">
               <div className="w-11 h-11 rounded-xl bg-[linear-gradient(135deg,var(--primary),var(--accent))] flex items-center justify-center shadow-lg group-hover:shadow-xl transition-shadow">
-                <span className="text-primary-foreground font-bold text-base">
-                  🎉
-                </span>
+                <IconSparkles
+                  className="w-6 h-6 text-primary-foreground"
+                  strokeWidth={2}
+                />
               </div>
               <div className="absolute -inset-1 bg-[linear-gradient(135deg,var(--primary),var(--accent))] rounded-xl blur opacity-0 group-hover:opacity-30 transition-opacity" />
             </div>
-            <span className="text-xl font-black bg-[linear-gradient(135deg,var(--foreground),var(--foreground)/70)] bg-clip-text text-transparent">
+            <span className="text-xl font-black bg-[linear-gradient(135deg,var(--foreground),var(--foreground)/70)] bg-clip-text text-secondary-foreground">
               Party Room
             </span>
           </Link>

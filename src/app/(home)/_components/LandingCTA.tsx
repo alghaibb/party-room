@@ -40,14 +40,14 @@ export function LandingCTA({ isAuthenticated }: LandingCTAProps) {
               <div className="pt-4">
                 {isAuthenticated ? (
                   <Button asChild variant="modern" size="modern-lg">
-                    <Link href="/dashboard">
+                    <Link href="/dashboard" prefetch={true}>
                       Go to Dashboard
                       <ArrowRight className="w-6 h-6 group-hover:translate-x-1 transition-transform" />
                     </Link>
                   </Button>
                 ) : (
                   <Button asChild variant="modern" size="modern-lg">
-                    <Link href="/sign-up">
+                    <Link href="/sign-up" prefetch={true}>
                       Get Started Free
                       <ArrowRight className="w-6 h-6 group-hover:translate-x-1 transition-transform" />
                     </Link>

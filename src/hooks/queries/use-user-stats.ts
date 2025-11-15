@@ -1,22 +1,16 @@
 "use client";
 
-import { useQuery } from "@tanstack/react-query";
 import type { UserStats } from "@/types/queries";
+import { createQueryHook, createFetchFn } from "./query-factory";
 
-async function fetchUserStats(): Promise<UserStats> {
-  const response = await fetch("/api/user/stats");
-  if (!response.ok) {
-    throw new Error("Failed to fetch user stats");
-  }
-  return response.json();
-}
+const fetchUserStats = createFetchFn<UserStats>(
+  "/api/user/stats",
+  "Failed to fetch user stats"
+);
 
-export function useUserStats() {
-  return useQuery({
-    queryKey: ["user-stats"],
-    queryFn: fetchUserStats,
-    staleTime: 60 * 1000, // 1 minute
-    refetchOnMount: false, // Don't refetch if cached data exists
-  });
-}
+export const useUserStats = createQueryHook({
+  queryKey: ["user-stats"],
+  fetchFn: fetchUserStats,
+  staleTime: 60 * 1000, // 1 minute
+});
 

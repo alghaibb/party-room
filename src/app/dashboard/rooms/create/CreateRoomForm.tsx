@@ -23,7 +23,6 @@ import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
-import { startTransition } from "react";
 
 export function CreateRoomForm() {
   const router = useRouter();
@@ -54,12 +53,7 @@ export function CreateRoomForm() {
       }
 
       toast.success(`Room created successfully! Code: ${result.roomCode} 🎉`);
-      // Prefetch and navigate with startTransition for instant navigation
-      const roomPath = `/dashboard/rooms/${result.roomId}`;
-      startTransition(() => {
-        router.prefetch(roomPath);
-        router.push(roomPath);
-      });
+      router.push(`/dashboard/rooms/${result.roomId}`);
     } catch (error) {
       console.error("Error creating room:", error);
       toast.error("An unexpected error occurred. Please try again.");

@@ -21,7 +21,6 @@ import { useRouter } from "next/navigation";
 import { authClient } from "@/lib/auth-client";
 import { useSearchParams } from "next/navigation";
 import { PasswordInput } from "@/components/ui/password-input";
-import { startTransition } from "react";
 
 export function SignUpForm() {
   const router = useRouter();
@@ -56,12 +55,7 @@ export function SignUpForm() {
       if (redirectTo) {
         params.set("redirectTo", redirectTo);
       }
-      const verifyPath = `/verify-email?${params.toString()}`;
-      // Prefetch and navigate with startTransition for instant navigation
-      startTransition(() => {
-        router.prefetch(verifyPath);
-        router.push(verifyPath);
-      });
+      router.push(`/verify-email?${params.toString()}`);
     }
   }
 

@@ -1,23 +1,12 @@
 "use client";
 
 import { useActiveRooms } from "@/hooks/queries/use-active-rooms";
-import { useQuery } from "@tanstack/react-query";
+import { useSession } from "@/hooks/queries/use-session";
 import { RoomCard } from "./RoomCard";
-
-async function fetchSession() {
-  const response = await fetch("/api/auth/session");
-  if (!response.ok) return null;
-  return response.json();
-}
 
 export function RoomGrid() {
   const { data: rooms } = useActiveRooms();
-  const { data: session } = useQuery({
-    queryKey: ["session"],
-    queryFn: fetchSession,
-    staleTime: 5 * 60 * 1000, // 5 minutes
-    refetchOnMount: false,
-  });
+  const { data: session } = useSession();
 
   const isVerified = session?.user?.emailVerified || false;
   const currentUserId = session?.user?.id;

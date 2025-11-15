@@ -19,6 +19,7 @@ import { useChatScroll } from "@/hooks/use-chat-scroll";
 import { ChatMessageItem } from "./ChatMessage";
 import type { ChatMessage } from "@/hooks/use-realtime-chat";
 import { saveMessage } from "../actions";
+import { RoomEventsProvider } from "@/contexts/room-events-context";
 
 interface ChatAreaProps {
   roomId: string;
@@ -56,22 +57,6 @@ export function ChatArea({
     scrollToBottom();
   }, [messages, scrollToBottom]);
 
-  // Expose broadcastRoomDeleted to parent via window for RoomManagementDropdown
-  useEffect(() => {
-    (
-      window as typeof window & {
-        broadcastRoomDeleted?: typeof broadcastRoomDeleted;
-      }
-    ).broadcastRoomDeleted = broadcastRoomDeleted;
-    return () => {
-      delete (
-        window as typeof window & {
-          broadcastRoomDeleted?: typeof broadcastRoomDeleted;
-        }
-      ).broadcastRoomDeleted;
-    };
-  }, [broadcastRoomDeleted]);
-
   const handleSendMessage = async () => {
     if (!messageInput.trim() || !isConnected) return;
 
@@ -85,8 +70,11 @@ export function ChatArea({
       handleSendMessage();
     }
   };
+
+  // Wrap component with RoomEventsProvider to expose broadcastRoomDeleted via context
   return (
-    <Card
+    <RoomEventsProvider broadcastRoomDeleted={broadcastRoomDeleted}>
+      <Card
       className={`rounded-2xl bg-background/40 backdrop-blur-xl border border-foreground/10 shadow-lg ${
         isMinimized ? "flex flex-col chat-minimized" : "h-full flex flex-col"
       }`}
@@ -233,6 +221,7 @@ export function ChatArea({
           </div>
         </CardContent>
       )}
-    </Card>
+      </Card>
+    </RoomEventsProvider>
   );
 }

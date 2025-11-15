@@ -2,8 +2,7 @@
 
 import * as React from "react";
 import { type Icon } from "@tabler/icons-react";
-import { usePathname, useRouter } from "next/navigation";
-import { startTransition } from "react";
+import { usePathname } from "next/navigation";
 
 import {
   SidebarGroup,
@@ -26,17 +25,12 @@ export function NavSecondary({
   }[];
 } & React.ComponentPropsWithoutRef<typeof SidebarGroup>) {
   const pathname = usePathname();
-  const router = useRouter();
   const { isMobile, setOpenMobile } = useSidebar();
 
-  const handleLinkClick = (href: string) => {
+  const handleLinkClick = () => {
     if (isMobile) {
       setOpenMobile(false);
     }
-    // Prefetch route for instant navigation
-    startTransition(() => {
-      router.prefetch(href);
-    });
   };
 
   return (
@@ -58,7 +52,8 @@ export function NavSecondary({
                 >
                   <Link
                     href={item.url}
-                    onClick={() => handleLinkClick(item.url)}
+                    prefetch={true}
+                    onClick={handleLinkClick}
                     className="gap-3"
                   >
                     <item.icon

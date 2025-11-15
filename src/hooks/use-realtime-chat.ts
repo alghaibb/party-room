@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import { supabase } from "@/lib/supabase/client";
 import type { RealtimeChannel } from "@supabase/supabase-js";
+import { useRouter } from "next/navigation";
 
 export interface ChatMessage {
   id: string;
@@ -10,6 +11,34 @@ export interface ChatMessage {
     name: string;
   };
   createdAt: string;
+}
+
+/**
+ * Creates a system message for chat events
+ */
+function createSystemMessage(content: string): ChatMessage {
+  return {
+    id: `system-${Date.now()}-${Math.random()}`,
+    content,
+    user: {
+      id: "system",
+      name: "System",
+    },
+    createdAt: new Date().toISOString(),
+  };
+}
+
+/**
+ * Adds a message to the messages array and calls the onMessage callback
+ */
+function addMessage(
+  prev: ChatMessage[],
+  message: ChatMessage,
+  onMessage?: (messages: ChatMessage[]) => void
+): ChatMessage[] {
+  const updated = [...prev, message];
+  onMessage?.(updated);
+  return updated;
 }
 
 interface UseRealtimeChatProps {
@@ -29,6 +58,7 @@ export function useRealtimeChat({
   initialMessages = [],
   onMessage,
 }: UseRealtimeChatProps) {
+  const router = useRouter();
   const [messages, setMessages] = useState<ChatMessage[]>(
     () => initialMessages
   );
@@ -79,66 +109,40 @@ export function useRealtimeChat({
           if (prev.some((msg) => msg.id === newMessage.id)) {
             return prev;
           }
-          const updated = [...prev, newMessage];
-          onMessage?.(updated);
-          return updated;
+          return addMessage(prev, newMessage, onMessage);
         });
       })
       .on("broadcast", { event: "user-joined" }, ({ payload }) => {
         // Don't show join message for yourself
         if (payload.userId === userId) return;
 
-        const systemMessage: ChatMessage = {
-          id: `system-${Date.now()}-${Math.random()}`,
-          content: `${payload.displayUsername || payload.userName} joined the room`,
-          user: {
-            id: "system",
-            name: "System",
-          },
-          createdAt: new Date().toISOString(),
-        };
-        setMessages((prev) => {
-          const updated = [...prev, systemMessage];
-          onMessage?.(updated);
-          return updated;
-        });
+        const systemMessage = createSystemMessage(
+          `${payload.displayUsername || payload.userName} joined the room`
+        );
+        setMessages((prev) => addMessage(prev, systemMessage, onMessage));
       })
       .on("broadcast", { event: "user-left" }, ({ payload }) => {
         // Don't show leave message for yourself
         if (payload.userId === userId) return;
 
-        const systemMessage: ChatMessage = {
-          id: `system-${Date.now()}-${Math.random()}`,
-          content: `${payload.displayUsername || payload.userName} left the room`,
-          user: {
-            id: "system",
-            name: "System",
-          },
-          createdAt: new Date().toISOString(),
-        };
-        setMessages((prev) => {
-          const updated = [...prev, systemMessage];
-          onMessage?.(updated);
-          return updated;
-        });
+        const systemMessage = createSystemMessage(
+          `${payload.displayUsername || payload.userName} left the room`
+        );
+        setMessages((prev) => addMessage(prev, systemMessage, onMessage));
       })
       .on("broadcast", { event: "room-deleted" }, ({ payload }) => {
         // Room was deleted by owner - kick everyone out
-        const systemMessage: ChatMessage = {
-          id: `system-${Date.now()}-${Math.random()}`,
-          content: `This room has been deleted by ${payload.ownerName}`,
-          user: {
-            id: "system",
-            name: "System",
-          },
-          createdAt: new Date().toISOString(),
-        };
-        setMessages((prev) => [...prev, systemMessage]);
+        const systemMessage = createSystemMessage(
+          `This room has been deleted by ${payload.ownerName}`
+        );
+        setMessages((prev) => addMessage(prev, systemMessage));
         setRoomDeleted(true);
 
         // Redirect after a brief delay to show the message
         setTimeout(() => {
-          window.location.href = "/dashboard/rooms";
+          if (typeof window !== "undefined") {
+            router.push("/dashboard/rooms");
+          }
         }, 2000);
       })
       .subscribe((status) => {
@@ -176,7 +180,7 @@ export function useRealtimeChat({
         roomChannel.unsubscribe();
       }
     };
-  }, [roomId, userId, userName, displayUsername, onMessage]);
+  }, [roomId, userId, userName, displayUsername, onMessage, router]);
 
   const sendMessage = useCallback(
     async (
@@ -200,11 +204,7 @@ export function useRealtimeChat({
       };
 
       // Optimistic update: Add message to UI immediately
-      setMessages((prev) => {
-        const updated = [...prev, message];
-        onMessage?.(updated);
-        return updated;
-      });
+      setMessages((prev) => addMessage(prev, message, onMessage));
 
       // Broadcast to other users immediately (non-blocking)
       channel.send({

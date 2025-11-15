@@ -22,7 +22,6 @@ import { useRouter } from "next/navigation";
 import { authClient } from "@/lib/auth-client";
 import { useSearchParams } from "next/navigation";
 import { PasswordInput } from "@/components/ui/password-input";
-import { startTransition } from "react";
 
 export function SignInForm() {
   const router = useRouter();
@@ -67,12 +66,7 @@ export function SignInForm() {
       toast.error(error.message);
     } else {
       toast.success("Signed in successfully");
-      const targetPath = redirectTo ?? "/dashboard";
-      // Prefetch and navigate with startTransition for instant navigation
-      startTransition(() => {
-        router.prefetch(targetPath);
-        router.push(targetPath);
-      });
+      router.push(redirectTo ?? "/dashboard");
     }
   }
 

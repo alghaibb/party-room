@@ -26,15 +26,17 @@ export function useUsernameAvailability(
   const [message, setMessage] = useState<string | null>(null);
 
 
-  const checkUsernameAvailabilityFn = async (username: string): Promise<void> => {
-    // Reset states
-    setError(null);
+  const resetState = () => {
     setIsAvailable(null);
     setMessage(null);
+    setError(null);
+    setIsChecking(false);
+  };
 
-    // Don't check if username is too short
+  const checkUsernameAvailabilityFn = async (username: string): Promise<void> => {
+    resetState();
+
     if (username.length < minLength) {
-      setIsChecking(false);
       return;
     }
 
@@ -47,8 +49,7 @@ export function useUsernameAvailability(
     } catch (error) {
       console.error("Error checking username availability:", error);
       setError("Failed to check username availability. Please try again.");
-      setIsAvailable(null);
-      setMessage(null);
+      resetState();
     } finally {
       setIsChecking(false);
     }
@@ -61,10 +62,7 @@ export function useUsernameAvailability(
 
   const checkUsername = (username: string) => {
     if (!username || username.length < minLength) {
-      setIsAvailable(null);
-      setMessage(null);
-      setError(null);
-      setIsChecking(false);
+      resetState();
       return;
     }
 

@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { Users } from "lucide-react";
+import { IconSparkles } from "@tabler/icons-react";
 import { useEffect, useState } from "react";
 
 interface NavbarContentProps {
@@ -25,15 +25,19 @@ export function NavbarContent({ isAuthenticated }: NavbarContentProps) {
       {/* Logo */}
       <Link
         href="/"
+        prefetch={true}
         className="flex items-center gap-3 group transition-transform hover:scale-105"
       >
         <div className="relative">
           <div className="w-10 h-10 rounded-xl bg-[linear-gradient(135deg,var(--primary),var(--accent))] flex items-center justify-center shadow-lg group-hover:shadow-xl transition-shadow">
-            <Users className="w-6 h-6 text-primary-foreground" />
+            <IconSparkles
+              className="w-6 h-6 text-primary-foreground"
+              strokeWidth={2}
+            />
           </div>
           <div className="absolute -inset-1 bg-[linear-gradient(135deg,var(--primary),var(--accent))] rounded-xl blur opacity-0 group-hover:opacity-30 transition-opacity" />
         </div>
-        <span className="text-xl font-black bg-[linear-gradient(135deg,var(--foreground),var(--foreground)/70)] bg-clip-text text-transparent">
+        <span className="text-xl font-black bg-[linear-gradient(135deg,var(--foreground),var(--foreground)/70)] bg-clip-text text-secondary-foreground">
           Party Room
         </span>
       </Link>
@@ -69,15 +73,21 @@ export function NavbarContent({ isAuthenticated }: NavbarContentProps) {
                 : ""
             }
           >
-            <Link href="/dashboard">Dashboard</Link>
+            <Link href="/dashboard" prefetch={true}>
+              Dashboard
+            </Link>
           </Button>
         ) : (
           <>
             <Button asChild variant="ghost" size="modern-sm">
-              <Link href="/sign-in">Sign In</Link>
+              <Link href="/sign-in" prefetch={true}>
+                Sign In
+              </Link>
             </Button>
             <Button asChild variant="modern" size="modern-sm">
-              <Link href="/sign-up">Get Started</Link>
+              <Link href="/sign-up" prefetch={true}>
+                Get Started
+              </Link>
             </Button>
           </>
         )}
@@ -85,4 +95,3 @@ export function NavbarContent({ isAuthenticated }: NavbarContentProps) {
     </>
   );
 }
-

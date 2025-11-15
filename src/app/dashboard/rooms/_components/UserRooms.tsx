@@ -89,7 +89,9 @@ export function UserRooms() {
               </div>
 
               <Button asChild size="modern-sm" variant="modern-outline">
-                <Link href={`/dashboard/rooms/${room.id}`}>Rejoin</Link>
+                <Link href={`/dashboard/rooms/${room.id}`} prefetch={true}>
+                  Rejoin
+                </Link>
               </Button>
             </div>
           </CardContent>

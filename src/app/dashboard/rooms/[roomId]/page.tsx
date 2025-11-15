@@ -1,8 +1,27 @@
 import { redirect } from "next/navigation";
 import { getSession } from "@/lib/get-session";
-import { RoomContent } from "./_components/RoomContent";
+import dynamic from "next/dynamic";
 import { getRoomDetails } from "./data";
 import { Metadata } from "next";
+
+// Lazy load RoomContent for faster initial page load
+const RoomContent = dynamic(
+  () => import("./_components/RoomContent").then((mod) => ({ default: mod.RoomContent })),
+  {
+    loading: () => (
+      <div className="flex flex-1 flex-col lg:flex-row gap-6 p-4 md:p-6 h-full min-h-0">
+        <div className="flex-1 space-y-4">
+          <div className="h-20 bg-muted/50 rounded-lg animate-pulse" />
+          <div className="h-64 bg-muted/50 rounded-lg animate-pulse" />
+        </div>
+        <div className="lg:w-80 space-y-4">
+          <div className="h-96 bg-muted/50 rounded-lg animate-pulse" />
+        </div>
+      </div>
+    ),
+    ssr: true,
+  }
+);
 
 interface RoomPageProps {
   params: Promise<{

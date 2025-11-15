@@ -14,6 +14,31 @@ interface UseRoomPresenceProps {
   displayUsername: string;
 }
 
+/**
+ * Extracts users from presence state
+ */
+function extractUsersFromState(state: Record<string, RoomUser[]>): RoomUser[] {
+  const users: RoomUser[] = [];
+  Object.values(state).forEach((presences) => {
+    presences.forEach((presence) => {
+      users.push({
+        userId: presence.userId,
+        displayUsername: presence.displayUsername,
+        userName: presence.userName,
+      });
+    });
+  });
+  return users;
+}
+
+/**
+ * Converts presence data to RoomUser
+ */
+function toRoomUser(presence: unknown): RoomUser | null {
+  const data = presence as RoomUser;
+  return data.userId ? data : null;
+}
+
 export function useRoomPresence({
   roomId,
   userId,
@@ -35,48 +60,27 @@ export function useRoomPresence({
     presenceChannel
       .on("presence", { event: "sync" }, () => {
         const state = presenceChannel.presenceState<RoomUser>();
-        const users: RoomUser[] = [];
-
-        Object.values(state).forEach((presences) => {
-          presences.forEach((presence) => {
-            users.push({
-              userId: presence.userId,
-              displayUsername: presence.displayUsername,
-              userName: presence.userName,
-            });
-          });
-        });
-
-        setOnlineUsers(users);
+        setOnlineUsers(extractUsersFromState(state));
       })
       .on("presence", { event: "join" }, ({ newPresences }) => {
         setOnlineUsers((prev) => {
-          const updatedUsers = [...prev];
-          newPresences.forEach((presence) => {
-            const presenceData = presence as unknown as RoomUser;
-            if (
-              presenceData.userId &&
-              !updatedUsers.some((u) => u.userId === presenceData.userId)
-            ) {
-              updatedUsers.push({
-                userId: presenceData.userId,
-                displayUsername: presenceData.displayUsername,
-                userName: presenceData.userName,
-              });
-            }
-          });
-          return updatedUsers;
+          const newUsers = newPresences
+            .map(toRoomUser)
+            .filter((user): user is RoomUser => {
+              return user !== null && !prev.some((u) => u.userId === user.userId);
+            });
+          return [...prev, ...newUsers];
         });
       })
       .on("presence", { event: "leave" }, ({ leftPresences }) => {
         setOnlineUsers((prev) => {
-          const updatedUsers = prev.filter((user) => {
-            return !leftPresences.some((p) => {
-              const presenceData = p as unknown as RoomUser;
-              return presenceData.userId === user.userId;
-            });
-          });
-          return updatedUsers;
+          const leftUserIds = new Set(
+            leftPresences
+              .map(toRoomUser)
+              .filter((user): user is RoomUser => user !== null)
+              .map((user) => user.userId)
+          );
+          return prev.filter((user) => !leftUserIds.has(user.userId));
         });
       })
       .subscribe(async (status) => {

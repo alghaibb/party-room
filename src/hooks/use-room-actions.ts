@@ -1,10 +1,17 @@
 import { useState } from "react";
 import { toast } from "sonner";
 import { joinRoom, deleteRoom, leaveRoom } from "@/app/dashboard/rooms/actions";
+import { useRoomEvents } from "@/contexts/room-events-context";
+import { useAppNavigation } from "@/lib/navigation";
 
 // Centralized room action handlers for better maintainability
 export function useRoomActions() {
   const [isLoading, setIsLoading] = useState(false);
+  const { navigateToRoom, navigateToRooms } = useAppNavigation();
+  
+  // Get room events context if available (for delete action)
+  const roomEvents = useRoomEvents();
+  const broadcastRoomDeleted = roomEvents?.broadcastRoomDeleted;
 
   const handleJoinRoom = async (roomCode: string) => {
     setIsLoading(true);
@@ -19,8 +26,8 @@ export function useRoomActions() {
 
       toast.success(result.message);
 
-      // Optimistic navigation
-      window.location.href = `/dashboard/rooms/${result.roomId}`;
+      // Client-side navigation without page reload
+      navigateToRoom(result.roomId);
       return true;
 
     } catch (error) {
@@ -44,16 +51,15 @@ export function useRoomActions() {
       }
 
       // Broadcast room deletion to all users in the room
-      const broadcastFn = (window as typeof window & { broadcastRoomDeleted?: (ownerName: string) => void }).broadcastRoomDeleted;
-      if (broadcastFn) {
-        broadcastFn(ownerName);
+      if (broadcastRoomDeleted) {
+        broadcastRoomDeleted(ownerName);
       }
 
       toast.success(result.message);
 
-      // Navigate back to rooms list
+      // Navigate back to rooms list after a brief delay
       setTimeout(() => {
-        window.location.href = "/dashboard/rooms";
+        navigateToRooms();
       }, 500);
 
       return true;
@@ -81,7 +87,7 @@ export function useRoomActions() {
       toast.success(result.message);
 
       // Navigate back to rooms list
-      window.location.href = "/dashboard/rooms";
+      navigateToRooms();
       return true;
 
     } catch (error) {

@@ -1,23 +1,17 @@
 "use client";
 
-import { useQuery } from "@tanstack/react-query";
 import type { RoomDetails } from "@/types/queries";
+import { createParamQueryHook, createParamFetchFn } from "./query-factory";
 
-async function fetchRoomDetails(roomId: string): Promise<RoomDetails> {
-  const response = await fetch(`/api/rooms/${roomId}`);
-  if (!response.ok) {
-    throw new Error("Failed to fetch room details");
-  }
-  return response.json();
-}
+const fetchRoomDetails = createParamFetchFn<RoomDetails>(
+  (roomId) => `/api/rooms/${roomId}`,
+  "Failed to fetch room details"
+);
 
-export function useRoomDetails(roomId: string) {
-  return useQuery({
-    queryKey: ["rooms", roomId],
-    queryFn: () => fetchRoomDetails(roomId),
-    staleTime: 30 * 1000, // 30 seconds
-    refetchOnMount: false, // Don't refetch if cached data exists
-    enabled: !!roomId,
-  });
-}
+export const useRoomDetails = createParamQueryHook({
+  baseQueryKey: ["rooms"],
+  fetchFn: fetchRoomDetails,
+  staleTime: 30 * 1000, // 30 seconds
+  getEnabled: (roomId) => !!roomId,
+});
 
