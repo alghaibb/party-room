@@ -59,10 +59,10 @@ export function PlayerList({
   const offlineMembers = updatedMembers.filter((member) => !member.isOnline);
 
   return (
-    <Card className="h-full">
-      <CardHeader className="pb-3">
-        <CardTitle className="flex items-center gap-2 text-base">
-          <IconUsers className="w-4 h-4" />
+    <Card className="h-full rounded-2xl bg-background/40 backdrop-blur-xl border border-foreground/10 shadow-lg">
+      <CardHeader className="pb-4">
+        <CardTitle className="flex items-center gap-3 text-lg font-bold">
+          <IconUsers className="w-5 h-5 text-primary" />
           Players ({members.length}/{maxPlayers})
         </CardTitle>
       </CardHeader>

@@ -17,6 +17,7 @@ import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import { useRouter, useSearchParams } from "next/navigation";
 import { authClient } from "@/lib/auth-client";
+import { startTransition } from "react";
 
 const verifyEmailSchema = z.object({
   otp: otpSchema,
@@ -47,7 +48,12 @@ export function VerifyEmailForm() {
       toast.error(error.message);
     } else {
       toast.success("Email verified successfully! Welcome to Party Room!");
-      router.push(redirectTo ?? "/onboarding");
+      const targetPath = redirectTo ?? "/onboarding";
+      // Prefetch and navigate with startTransition for instant navigation
+      startTransition(() => {
+        router.prefetch(targetPath);
+        router.push(targetPath);
+      });
     }
   }
 

@@ -3,7 +3,7 @@
 import { LoadingButton } from "./LoadingButton";
 import { authClient } from "@/lib/auth-client";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useState, startTransition } from "react";
 import { toast } from "sonner";
 
 interface SignOutButtonProps {
@@ -16,15 +16,24 @@ export function SignOutButton({ className }: SignOutButtonProps) {
 
   async function onSignOut() {
     setIsLoading(true);
+    // Prefetch sign-in page for instant navigation
+    startTransition(() => {
+      router.prefetch("/sign-in");
+    });
+    
     const { error } = await authClient.signOut();
 
     if (error) {
       toast.error(error.message);
+      setIsLoading(false);
     } else {
       toast.success("Signed out successfully");
-      router.push("/sign-in");
+      // Use startTransition for non-urgent navigation
+      startTransition(() => {
+        router.push("/sign-in");
+      });
+      setIsLoading(false);
     }
-    setIsLoading(false);
   }
 
   return (

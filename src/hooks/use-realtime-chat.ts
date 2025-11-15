@@ -1,5 +1,3 @@
-"use client";
-
 import { useState, useEffect, useCallback, useRef } from "react";
 import { supabase } from "@/lib/supabase/client";
 import type { RealtimeChannel } from "@supabase/supabase-js";
@@ -37,6 +35,29 @@ export function useRealtimeChat({
   const [isConnected, setIsConnected] = useState(false);
   const [roomDeleted, setRoomDeleted] = useState(false);
   const channelRef = useRef<RealtimeChannel | null>(null);
+  const hasInitializedRef = useRef(false);
+
+  // Sync initialMessages when they become available (e.g., after React Query loads)
+  useEffect(() => {
+    if (initialMessages.length > 0) {
+      setMessages((prev) => {
+        // If we haven't initialized yet, or if current messages are empty, use initial messages
+        if (!hasInitializedRef.current || prev.length === 0) {
+          hasInitializedRef.current = true;
+          return initialMessages;
+        }
+        // Otherwise, merge initial messages with existing ones (avoid duplicates)
+        const existingIds = new Set(prev.map((m) => m.id));
+        const newMessages = initialMessages.filter((m) => !existingIds.has(m.id));
+        if (newMessages.length > 0) {
+          return [...prev, ...newMessages].sort(
+            (a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
+          );
+        }
+        return prev;
+      });
+    }
+  }, [initialMessages]);
 
   // Set up Supabase Realtime channel
   useEffect(() => {

@@ -19,6 +19,7 @@ import { toast } from "sonner";
 import { useRouter, useSearchParams } from "next/navigation";
 import { authClient } from "@/lib/auth-client";
 import { PasswordInput } from "@/components/ui/password-input";
+import { startTransition } from "react";
 
 export function ResetPasswordForm() {
   const router = useRouter();
@@ -50,7 +51,11 @@ export function ResetPasswordForm() {
       toast.success(
         "Password reset successfully! Please sign in with your new password."
       );
-      router.push("/sign-in");
+      // Prefetch and navigate with startTransition for instant navigation
+      startTransition(() => {
+        router.prefetch("/sign-in");
+        router.push("/sign-in");
+      });
     }
   }
 

@@ -23,6 +23,7 @@ import {
   SidebarContent,
   SidebarFooter,
   SidebarHeader,
+  useSidebar,
 } from "@/components/ui/sidebar";
 import { User } from "@/lib/auth";
 import Link from "next/link";
@@ -61,6 +62,11 @@ const data = {
   ],
   navSecondary: [
     {
+      title: "Home",
+      url: "/",
+      icon: IconHome,
+    },
+    {
       title: "Settings",
       url: "/dashboard/settings",
       icon: IconSettings,
@@ -96,24 +102,38 @@ const data = {
 };
 
 export function AppSidebar({ user, ...props }: AppSidebarProps) {
+  const { isMobile, setOpenMobile } = useSidebar();
+
+  const handleLogoClick = () => {
+    if (isMobile) {
+      setOpenMobile(false);
+    }
+  };
+
   return (
-    <Sidebar collapsible="offcanvas" {...props}>
-      <SidebarHeader>
-        <div className="px-2 py-1.5">
+    <Sidebar collapsible="offcanvas" {...props} className="border-r border-foreground/5 bg-background/30 backdrop-blur-xl">
+      <SidebarHeader className="border-b border-foreground/5 p-4">
+        <div className="px-2">
           <Link
             href="/dashboard"
-            className="flex items-center gap-2 p-1.5 rounded-lg transition-colors"
+            onClick={handleLogoClick}
+            className="flex items-center gap-3 p-2 rounded-xl transition-all hover:scale-105 group hover:bg-background/50"
           >
-            <div className="w-8 h-8 bg-primary rounded-xl flex items-center justify-center">
-              <span className="text-primary-foreground font-bold text-sm">
-                🎉
-              </span>
+            <div className="relative">
+              <div className="w-11 h-11 rounded-xl bg-[linear-gradient(135deg,var(--primary),var(--accent))] flex items-center justify-center shadow-lg group-hover:shadow-xl transition-shadow">
+                <span className="text-primary-foreground font-bold text-base">
+                  🎉
+                </span>
+              </div>
+              <div className="absolute -inset-1 bg-[linear-gradient(135deg,var(--primary),var(--accent))] rounded-xl blur opacity-0 group-hover:opacity-30 transition-opacity" />
             </div>
-            <span className="text-base font-semibold">Party Room</span>
+            <span className="text-xl font-black bg-[linear-gradient(135deg,var(--foreground),var(--foreground)/70)] bg-clip-text text-transparent">
+              Party Room
+            </span>
           </Link>
         </div>
       </SidebarHeader>
-      <SidebarContent>
+      <SidebarContent className="gap-6 py-6">
         <NavMain items={data.navMain} />
         <NavDocuments
           items={data.quickActions}
@@ -121,7 +141,7 @@ export function AppSidebar({ user, ...props }: AppSidebarProps) {
         />
         <NavSecondary items={data.navSecondary} className="mt-auto" />
       </SidebarContent>
-      <SidebarFooter>
+      <SidebarFooter className="border-t border-foreground/5 p-4">
         <NavUser user={user} />
       </SidebarFooter>
     </Sidebar>

@@ -28,21 +28,22 @@ export function RoomCard({
   const isOwner = currentUserId === room.owner.id;
 
   return (
-    <Card className="hover:shadow-md transition-shadow">
-      <CardHeader className="pb-3">
+    <Card className="rounded-2xl bg-background/40 backdrop-blur-xl border border-foreground/10 shadow-lg hover:shadow-xl transition-all hover:scale-[1.02]">
+      <CardHeader className="pb-4">
         <div className="flex items-start justify-between">
-          <div className="space-y-1 flex-1">
-            <h3 className="font-semibold text-base leading-none">
-              {room.name}
-            </h3>
+          <div className="space-y-2 flex-1">
+            <h3 className="font-bold text-lg leading-tight">{room.name}</h3>
             {room.description && (
-              <p className="text-sm text-muted-foreground line-clamp-2">
+              <p className="text-sm text-muted-foreground/80 line-clamp-2">
                 {room.description}
               </p>
             )}
           </div>
           <div className="flex items-center gap-2">
-            <Badge variant="outline" className="text-xs">
+            <Badge
+              variant="outline"
+              className="text-xs rounded-full border-foreground/20 font-mono"
+            >
               {room.code}
             </Badge>
             <RoomManagementDropdown
@@ -138,26 +139,26 @@ export function RoomCard({
         )}
       </CardContent>
 
-      <CardFooter>
+      <CardFooter className="pt-4">
         {isFull ? (
-          <Button disabled className="w-full" variant="outline">
+          <Button
+            disabled
+            className="w-full rounded-full"
+            variant="modern-outline"
+          >
             Room Full
           </Button>
         ) : !isVerified ? (
           <Button
             disabled
-            className="w-full"
-            variant="outline"
+            className="w-full rounded-full"
+            variant="modern-outline"
             title="Please verify your email to join rooms"
           >
             Verify Email to Join
           </Button>
         ) : (
-          <JoinRoomTrigger
-            isVerified={isVerified}
-            variant={!room.currentGame ? "default" : "outline"}
-            className="w-full"
-          />
+          <JoinRoomTrigger isVerified={isVerified} className="w-full" />
         )}
       </CardFooter>
     </Card>

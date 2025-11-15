@@ -42,17 +42,17 @@ export function RoomHeader({ room }: RoomHeaderProps) {
   };
 
   return (
-    <Card>
+    <Card className="rounded-2xl bg-background/40 backdrop-blur-xl border border-foreground/10 shadow-lg">
       <CardHeader className="pb-4">
         <div className="flex items-start justify-between">
-          <div className="flex items-center gap-3">
-            <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center">
-              <IconHome className="w-6 h-6 text-primary" />
+          <div className="flex items-center gap-4">
+            <div className="w-14 h-14 bg-[linear-gradient(135deg,var(--primary)/20,var(--accent)/20)] rounded-2xl flex items-center justify-center border border-foreground/10">
+              <IconHome className="w-7 h-7 text-primary" />
             </div>
             <div>
-              <CardTitle className="text-xl">{room.name}</CardTitle>
+              <CardTitle className="text-2xl font-black">{room.name}</CardTitle>
               {room.description && (
-                <p className="text-sm text-muted-foreground mt-1">
+                <p className="text-sm text-muted-foreground/80 mt-2">
                   {room.description}
                 </p>
               )}
@@ -101,16 +101,16 @@ export function RoomHeader({ room }: RoomHeaderProps) {
         </div>
 
         {/* Room Code */}
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-3">
           <Badge
             variant="outline"
-            className="text-sm font-mono cursor-pointer hover:bg-accent"
+            className="text-sm font-mono cursor-pointer hover:bg-accent/50 rounded-full border-foreground/20 px-3 py-1"
             onClick={handleCopyRoomCode}
           >
             <IconCopy className="w-3 h-3 mr-1" />
             {room.code}
           </Badge>
-          <span className="text-xs text-muted-foreground">
+          <span className="text-xs text-muted-foreground/60">
             Click to copy room code
           </span>
         </div>

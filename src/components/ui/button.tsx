@@ -19,6 +19,10 @@ const buttonVariants = cva(
         ghost:
           "hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50",
         link: "text-primary underline-offset-4 hover:underline",
+        modern:
+          "rounded-full bg-foreground text-background font-semibold overflow-hidden hover:scale-105 hover:shadow-2xl relative group",
+        "modern-outline":
+          "rounded-full border-2 border-foreground/20 font-semibold hover:border-foreground/40 hover:bg-foreground/5",
       },
       size: {
         default: "h-9 px-4 py-2 has-[>svg]:px-3",
@@ -27,6 +31,9 @@ const buttonVariants = cva(
         icon: "size-9",
         "icon-sm": "size-8",
         "icon-lg": "size-10",
+        "modern-sm": "px-6 py-2.5 rounded-full",
+        "modern-md": "px-8 py-4 rounded-full",
+        "modern-lg": "px-10 py-5 rounded-full text-lg font-bold",
       },
     },
     defaultVariants: {
@@ -41,11 +48,30 @@ function Button({
   variant,
   size,
   asChild = false,
+  children,
   ...props
 }: React.ComponentProps<"button"> &
   VariantProps<typeof buttonVariants> & {
     asChild?: boolean;
   }) {
+  const isModern = variant === "modern";
+
+  if (asChild && isModern) {
+    // When using asChild with modern variant, wrap in a container div
+    return (
+      <div className={cn(buttonVariants({ variant, size, className }))}>
+        <Slot
+          data-slot="button"
+          {...props}
+          className="relative z-10 flex items-center gap-2"
+        >
+          {children}
+        </Slot>
+        <div className="absolute inset-0 bg-[linear-gradient(135deg,var(--primary),var(--accent))] opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
+      </div>
+    );
+  }
+
   const Comp = asChild ? Slot : "button";
 
   return (
@@ -53,7 +79,18 @@ function Button({
       data-slot="button"
       className={cn(buttonVariants({ variant, size, className }))}
       {...props}
-    />
+    >
+      {isModern ? (
+        <>
+          <span className="relative z-10 flex items-center gap-2">
+            {children}
+          </span>
+          <div className="absolute inset-0 bg-[linear-gradient(135deg,var(--primary),var(--accent))] opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
+        </>
+      ) : (
+        children
+      )}
+    </Comp>
   );
 }
 

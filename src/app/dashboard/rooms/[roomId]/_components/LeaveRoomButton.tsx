@@ -37,7 +37,7 @@ export function LeaveRoomButton({ roomId, roomName }: LeaveRoomButtonProps) {
 
   return (
     <>
-      <Button variant="outline" size="sm" onClick={handleLeaveClick}>
+      <Button variant="modern-outline" size="modern-sm" onClick={handleLeaveClick}>
         <IconDoorExit className="w-4 h-4" />
         Leave Room
       </Button>
@@ -53,12 +53,14 @@ export function LeaveRoomButton({ roomId, roomName }: LeaveRoomButtonProps) {
           </AlertDialogHeader>
 
           <AlertDialogFooter>
-            <AlertDialogCancel disabled={isLoading}>Cancel</AlertDialogCancel>
+            <AlertDialogCancel disabled={isLoading} className="rounded-full">Cancel</AlertDialogCancel>
             <LoadingButton
               onClick={handleLeaveConfirm}
               isLoading={isLoading}
               loadingText="Leaving..."
               disabled={isLoading}
+              variant="modern"
+              size="modern-sm"
             >
               Leave Room
             </LoadingButton>
