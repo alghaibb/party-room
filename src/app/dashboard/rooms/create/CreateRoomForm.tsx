@@ -23,6 +23,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import { startTransition } from "react";
 
 export function CreateRoomForm() {
   const router = useRouter();
@@ -53,7 +54,12 @@ export function CreateRoomForm() {
       }
 
       toast.success(`Room created successfully! Code: ${result.roomCode} 🎉`);
-      router.push(`/dashboard/rooms/${result.roomId}`);
+      // Prefetch and navigate with startTransition for instant navigation
+      const roomPath = `/dashboard/rooms/${result.roomId}`;
+      startTransition(() => {
+        router.prefetch(roomPath);
+        router.push(roomPath);
+      });
     } catch (error) {
       console.error("Error creating room:", error);
       toast.error("An unexpected error occurred. Please try again.");
@@ -171,7 +177,9 @@ export function CreateRoomForm() {
           loadingText="Creating room..."
           isLoading={isLoading}
           disabled={isLoading}
-          className="w-full h-11 bg-primary hover:bg-primary/90 shadow-lg hover:shadow-xl transition-all duration-200"
+          variant="modern"
+          size="modern-md"
+          className="w-full"
         >
           Create Party Room
         </LoadingButton>

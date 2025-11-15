@@ -38,20 +38,20 @@ export function RoomContent({ roomId }: RoomContentProps) {
     session === undefined
   ) {
     return (
-      <div className="flex flex-1 flex-col lg:flex-row gap-6 p-4 md:p-6 h-full min-h-0">
+      <div className="flex flex-1 flex-col lg:flex-row gap-6 h-full min-h-0">
         <div className="lg:w-80 flex flex-col gap-4">
-          <Card>
+          <Card className="rounded-2xl bg-background/40 backdrop-blur-xl border border-foreground/10">
             <CardHeader className="space-y-3">
-              <div className="h-6 w-32 bg-muted animate-pulse rounded" />
-              <div className="h-4 w-24 bg-muted animate-pulse rounded" />
+              <div className="h-7 w-40 bg-muted/50 animate-pulse rounded" />
+              <div className="h-4 w-32 bg-muted/50 animate-pulse rounded" />
             </CardHeader>
           </Card>
-          <Card>
+          <Card className="rounded-2xl bg-background/40 backdrop-blur-xl border border-foreground/10">
             <CardContent className="space-y-3 pt-6">
               {Array.from({ length: 4 }).map((_, i) => (
-                <div key={i} className="flex items-center gap-2">
-                  <div className="w-8 h-8 bg-muted animate-pulse rounded-full" />
-                  <div className="h-4 w-32 bg-muted animate-pulse rounded" />
+                <div key={i} className="flex items-center gap-3">
+                  <div className="w-10 h-10 bg-muted/50 animate-pulse rounded-full" />
+                  <div className="h-4 w-36 bg-muted/50 animate-pulse rounded" />
                 </div>
               ))}
             </CardContent>
@@ -59,28 +59,28 @@ export function RoomContent({ roomId }: RoomContentProps) {
         </div>
 
         <div className="flex-1 flex flex-col gap-4 min-h-0">
-          <Card className="flex-1">
+          <Card className="flex-1 rounded-2xl bg-background/40 backdrop-blur-xl border border-foreground/10">
             <CardContent className="pt-6">
-              <div className="h-64 w-full bg-muted animate-pulse rounded" />
+              <div className="h-64 w-full bg-muted/50 animate-pulse rounded-2xl" />
             </CardContent>
           </Card>
         </div>
 
         <div className="lg:w-80 flex flex-col gap-4">
-          <Card className="flex-1 flex flex-col">
+          <Card className="flex-1 flex flex-col rounded-2xl bg-background/40 backdrop-blur-xl border border-foreground/10">
             <CardContent className="flex-1 flex flex-col pt-6">
               <div className="flex-1 space-y-3">
                 {Array.from({ length: 5 }).map((_, i) => (
-                  <div key={i} className="flex gap-2">
-                    <div className="w-8 h-8 bg-muted animate-pulse rounded-full" />
-                    <div className="flex-1 space-y-1">
-                      <div className="h-3 w-20 bg-muted animate-pulse rounded" />
-                      <div className="h-4 w-full bg-muted animate-pulse rounded" />
+                  <div key={i} className="flex gap-3">
+                    <div className="w-10 h-10 bg-muted/50 animate-pulse rounded-full" />
+                    <div className="flex-1 space-y-2">
+                      <div className="h-3 w-24 bg-muted/50 animate-pulse rounded" />
+                      <div className="h-4 w-full bg-muted/50 animate-pulse rounded" />
                     </div>
                   </div>
                 ))}
               </div>
-              <div className="h-10 w-full mt-4 bg-muted animate-pulse rounded" />
+              <div className="h-11 w-full mt-4 bg-muted/50 animate-pulse rounded-full" />
             </CardContent>
           </Card>
         </div>
@@ -141,7 +141,7 @@ export function RoomContent({ roomId }: RoomContentProps) {
         <div className="flex-1 min-h-0 has-[~_.chat-minimized]:flex-none has-[~_.chat-minimized]:h-full">
           <GameArea room={room} availableGames={availableGames} />
         </div>
-        <div className="shrink-0">
+        <div className="h-96 has-[.chat-minimized]:h-auto">
           <ChatArea
             roomId={room.id}
             roomName={room.name}

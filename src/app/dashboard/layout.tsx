@@ -44,7 +44,7 @@ export default async function DashboardLayout({
       <SidebarInset>
         <SiteHeader />
         {!user.emailVerified && <VerificationBanner userEmail={user.email} />}
-        <div className="flex flex-1 flex-col">{children}</div>
+        <div className="flex flex-1 flex-col bg-background/30">{children}</div>
       </SidebarInset>
       <ModalProvider />
     </SidebarProvider>

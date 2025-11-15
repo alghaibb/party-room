@@ -14,7 +14,8 @@ export function CreateRoomButton({ isVerified = true }: CreateRoomButtonProps) {
       asChild={isVerified}
       disabled={!isVerified}
       title={!isVerified ? "Please verify your email to create rooms" : ""}
-      size="sm"
+      variant="modern"
+      size="modern-sm"
     >
       {isVerified ? (
         <Link href="/dashboard/rooms/create">

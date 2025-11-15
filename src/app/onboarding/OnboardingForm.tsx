@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, startTransition } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
@@ -111,7 +111,11 @@ export function OnboardingForm({ userName }: OnboardingFormProps) {
       toast.success(
         "Welcome to Party Room! Your profile has been set up successfully."
       );
-      router.push("/");
+      // Prefetch and navigate with startTransition for instant navigation
+      startTransition(() => {
+        router.prefetch("/");
+        router.push("/");
+      });
     } catch (error) {
       console.error("Error submitting onboarding form:", error);
       toast.error("An unexpected error occurred. Please try again.");

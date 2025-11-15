@@ -2,7 +2,8 @@
 
 import * as React from "react";
 import { type Icon } from "@tabler/icons-react";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
+import { startTransition } from "react";
 
 import {
   SidebarGroup,
@@ -10,6 +11,7 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
+  useSidebar,
 } from "@/components/ui/sidebar";
 import Link from "next/link";
 
@@ -24,21 +26,60 @@ export function NavSecondary({
   }[];
 } & React.ComponentPropsWithoutRef<typeof SidebarGroup>) {
   const pathname = usePathname();
+  const router = useRouter();
+  const { isMobile, setOpenMobile } = useSidebar();
+
+  const handleLinkClick = (href: string) => {
+    if (isMobile) {
+      setOpenMobile(false);
+    }
+    // Prefetch route for instant navigation
+    startTransition(() => {
+      router.prefetch(href);
+    });
+  };
 
   return (
     <SidebarGroup {...props}>
-      <SidebarGroupContent>
+      <SidebarGroupContent className="px-2">
         <SidebarMenu>
-          {items.map((item) => (
-            <SidebarMenuItem key={item.title}>
-              <SidebarMenuButton asChild isActive={pathname === item.url}>
-                <Link href={item.url}>
-                  <item.icon />
-                  <span>{item.title}</span>
-                </Link>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-          ))}
+          {items.map((item) => {
+            const isActive = pathname === item.url;
+            return (
+              <SidebarMenuItem key={item.title}>
+                <SidebarMenuButton
+                  asChild
+                  isActive={isActive}
+                  className={`rounded-xl transition-all duration-200 ${
+                    isActive
+                      ? "bg-background/40 border border-foreground/10 font-semibold"
+                      : "hover:bg-background/30 hover:scale-[1.02]"
+                  }`}
+                >
+                  <Link
+                    href={item.url}
+                    onClick={() => handleLinkClick(item.url)}
+                    className="gap-3"
+                  >
+                    <item.icon
+                      className={`w-4 h-4 ${
+                        isActive ? "text-primary" : "text-muted-foreground"
+                      }`}
+                    />
+                    <span
+                      className={`${
+                        isActive
+                          ? "text-foreground font-bold tracking-tight"
+                          : "text-muted-foreground font-medium tracking-wide"
+                      }`}
+                    >
+                      {item.title}
+                    </span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            );
+          })}
         </SidebarMenu>
       </SidebarGroupContent>
     </SidebarGroup>

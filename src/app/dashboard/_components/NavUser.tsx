@@ -47,20 +47,23 @@ export function NavUser({ user }: NavUserProps) {
     return (
       <SidebarMenu>
         <SidebarMenuItem>
-          <SidebarMenuButton size="lg">
-            <Avatar className="h-8 w-8 rounded-lg">
+          <SidebarMenuButton
+            size="lg"
+            className="rounded-xl bg-background/40 backdrop-blur-sm border border-foreground/10 hover:bg-background/60 hover:text-foreground transition-all"
+          >
+            <Avatar className="h-9 w-9 rounded-xl border-2 border-foreground/10">
               <AvatarImage src={user.image ?? ""} alt={user.name} />
-              <AvatarFallback className="rounded-lg">
+              <AvatarFallback className="rounded-xl bg-[linear-gradient(135deg,var(--primary),var(--accent))] text-primary-foreground font-bold">
                 {user.name.charAt(0).toUpperCase()}
               </AvatarFallback>
             </Avatar>
             <div className="grid flex-1 text-left text-sm leading-tight">
-              <span className="truncate font-medium">{user.name}</span>
-              <span className="text-muted-foreground truncate text-xs">
+              <span className="truncate font-semibold">{user.name}</span>
+              <span className="text-muted-foreground/80 truncate text-xs">
                 {user.email}
               </span>
             </div>
-            <IconDotsVertical className="ml-auto size-4" />
+            <IconDotsVertical className="ml-auto size-4 text-muted-foreground" />
           </SidebarMenuButton>
         </SidebarMenuItem>
       </SidebarMenu>
@@ -72,64 +75,64 @@ export function NavUser({ user }: NavUserProps) {
       <SidebarMenuItem>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <SidebarMenuButton
-              size="lg"
-              className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
-            >
-              <Avatar className="h-8 w-8 rounded-lg">
+          <SidebarMenuButton
+            size="lg"
+            className="rounded-xl bg-background/40 backdrop-blur-sm border border-foreground/10 hover:bg-background/60 hover:text-foreground data-[state=open]:bg-background/60 data-[state=open]:text-foreground transition-all"
+          >
+              <Avatar className="h-9 w-9 rounded-xl border-2 border-foreground/10">
                 <AvatarImage src={user.image ?? ""} alt={user.name} />
-                <AvatarFallback className="rounded-lg">
+                <AvatarFallback className="rounded-xl bg-[linear-gradient(135deg,var(--primary),var(--accent))] text-primary-foreground font-bold">
                   {user.name.charAt(0).toUpperCase()}
                 </AvatarFallback>
               </Avatar>
               <div className="grid flex-1 text-left text-sm leading-tight">
-                <span className="truncate font-medium">{user.name}</span>
-                <span className="text-muted-foreground truncate text-xs">
+                <span className="truncate font-semibold">{user.name}</span>
+                <span className="text-muted-foreground/80 truncate text-xs">
                   {user.email}
                 </span>
               </div>
-              <IconDotsVertical className="ml-auto size-4" />
+              <IconDotsVertical className="ml-auto size-4 text-muted-foreground" />
             </SidebarMenuButton>
           </DropdownMenuTrigger>
           <DropdownMenuContent
-            className="w-(--radix-dropdown-menu-trigger-width) min-w-56 rounded-lg"
+            className="w-(--radix-dropdown-menu-trigger-width) min-w-56 rounded-2xl bg-background/95 backdrop-blur-xl border border-foreground/10 shadow-xl"
             side={isMobile ? "bottom" : "right"}
             align="end"
             sideOffset={4}
           >
             <DropdownMenuLabel className="p-0 font-normal">
-              <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
-                <Avatar className="h-8 w-8 rounded-lg">
+              <div className="flex items-center gap-3 px-3 py-3 text-left text-sm">
+                <Avatar className="h-10 w-10 rounded-xl border-2 border-foreground/10">
                   <AvatarImage src={user.image ?? ""} alt={user.name} />
-                  <AvatarFallback className="rounded-lg">
+                  <AvatarFallback className="rounded-xl bg-[linear-gradient(135deg,var(--primary),var(--accent))] text-primary-foreground font-bold">
                     {user.name.charAt(0)}
                   </AvatarFallback>
                 </Avatar>
                 <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-medium">{user.name}</span>
-                  <span className="text-muted-foreground truncate text-xs">
+                  <span className="truncate font-semibold">{user.name}</span>
+                  <span className="text-muted-foreground/80 truncate text-xs">
                     {user.email}
                   </span>
                 </div>
               </div>
             </DropdownMenuLabel>
-            <DropdownMenuSeparator />
+            <DropdownMenuSeparator className="bg-foreground/10" />
             <DropdownMenuGroup>
-              <DropdownMenuItem>
-                <IconUserCircle />
+              <DropdownMenuItem className="rounded-lg hover:bg-background/50 transition-colors">
+                <IconUserCircle className="w-4 h-4 mr-2" />
                 Account
               </DropdownMenuItem>
-              <DropdownMenuItem>
-                <IconCreditCard />
+              <DropdownMenuItem className="rounded-lg hover:bg-background/50 transition-colors">
+                <IconCreditCard className="w-4 h-4 mr-2" />
                 Billing
               </DropdownMenuItem>
-              <DropdownMenuItem>
-                <IconNotification />
+              <DropdownMenuItem className="rounded-lg hover:bg-background/50 transition-colors">
+                <IconNotification className="w-4 h-4 mr-2" />
                 Notifications
               </DropdownMenuItem>
             </DropdownMenuGroup>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem>
+            <DropdownMenuSeparator className="bg-foreground/10" />
+            <DropdownMenuItem className="rounded-lg hover:bg-background/50 transition-colors">
               <SignOutButton className="w-full" />
             </DropdownMenuItem>
           </DropdownMenuContent>

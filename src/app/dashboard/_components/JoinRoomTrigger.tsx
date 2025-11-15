@@ -100,8 +100,8 @@ export function JoinRoomTrigger({
     <Dialog open={isOpen} onOpenChange={handleOpenChange}>
       <DialogTrigger asChild>
         <Button
-          variant={variant}
-          size={size}
+          variant="modern-outline"
+          size={size === "sm" ? "modern-sm" : "modern-md"}
           disabled={!isVerified}
           title={!isVerified ? "Please verify your email to join rooms" : ""}
           className={className}
@@ -148,7 +148,8 @@ export function JoinRoomTrigger({
             <DialogFooter className="gap-2">
               <Button
                 type="button"
-                variant="outline"
+                variant="modern-outline"
+                size="modern-sm"
                 onClick={() => handleOpenChange(false)}
                 disabled={isLoading}
               >
@@ -159,6 +160,8 @@ export function JoinRoomTrigger({
                 isLoading={isLoading}
                 loadingText="Joining..."
                 disabled={isLoading || !isVerified}
+                variant="modern"
+                size="modern-sm"
               >
                 Join Room
               </LoadingButton>
