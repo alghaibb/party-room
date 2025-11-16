@@ -74,18 +74,18 @@ export const getActiveRooms = cache(async () => {
       code: room.code,
       maxPlayers: room.maxPlayers,
       currentPlayers: room._count.members,
-      onlineMembers: room.members.filter(m => m.isOnline).length,
+      onlineMembers: (Array.isArray(room.members) ? room.members : []).filter(m => m.isOnline).length,
       owner: {
         id: room.owner.id,
         name: room.owner.displayUsername || room.owner.name,
         username: room.owner.username,
         image: room.owner.image,
       },
-      currentGame: room.gameSessions[0] ? {
+      currentGame: (Array.isArray(room.gameSessions) && room.gameSessions[0]) ? {
         name: room.gameSessions[0].game.name,
         category: room.gameSessions[0].game.category,
       } : null,
-      members: room.members.map(member => ({
+      members: (Array.isArray(room.members) ? room.members : []).map(member => ({
         name: member.user.displayUsername || member.user.name,
         username: member.user.username,
         image: member.user.image,

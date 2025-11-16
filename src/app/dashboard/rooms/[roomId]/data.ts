@@ -81,14 +81,18 @@ export const getRoomDetails = cache(async (roomId: string) => {
       redirect("/dashboard/rooms");
     }
 
+    // Ensure members is always an array
+    const members = Array.isArray(room.members) ? room.members : [];
+    const gameSessions = Array.isArray(room.gameSessions) ? room.gameSessions : [];
+
     // Check if user is a member of the room
-    const userMembership = room.members.find(member => member.userId === session.user.id);
+    const userMembership = members.find(member => member.userId === session.user.id);
     if (!userMembership && room.ownerId !== session.user.id) {
       // User is not a member and not the owner
       throw new Error("You are not a member of this room");
     }
 
-    const currentGame = room.gameSessions[0] || null;
+    const currentGame = gameSessions[0] || null;
 
     return {
       id: room.id,
@@ -105,7 +109,7 @@ export const getRoomDetails = cache(async (roomId: string) => {
         username: room.owner.username,
         image: room.owner.image,
       },
-      members: room.members.map(member => ({
+      members: members.map(member => ({
         id: member.id,
         userId: member.userId,
         joinedAt: member.joinedAt,
@@ -121,7 +125,7 @@ export const getRoomDetails = cache(async (roomId: string) => {
         id: currentGame.id,
         status: currentGame.status,
         game: currentGame.game,
-        results: currentGame.results,
+        results: Array.isArray(currentGame.results) ? currentGame.results : [],
         startedAt: currentGame.startedAt,
       } : null,
       memberCount: room._count.members,
