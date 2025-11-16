@@ -115,11 +115,6 @@ export function RoomContent({ roomId }: RoomContentProps) {
       }))
     : [];
 
-  // Debug logging
-  if (typeof window !== 'undefined') {
-    console.log('[RoomContent] dbMessages:', dbMessages?.length || 0, 'initialMessages:', initialMessages.length);
-  }
-
   return (
     <>
       <div className="lg:w-80 flex flex-col gap-4">

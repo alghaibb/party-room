@@ -75,7 +75,6 @@ export function useRealtimeChat({
         // If we haven't initialized yet, use initial messages (even if empty)
         if (!hasInitializedRef.current) {
           hasInitializedRef.current = true;
-          console.log('[useRealtimeChat] Initializing with', initialMessages.length, 'messages');
           return initialMessages;
         }
         
@@ -90,7 +89,6 @@ export function useRealtimeChat({
           
           // If there are new messages, merge and sort
           if (newMessages.length > 0) {
-            console.log('[useRealtimeChat] Merging', newMessages.length, 'new messages with', prev.length, 'existing');
             const merged = [...prev, ...newMessages].sort(
               (a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
             );
@@ -100,7 +98,6 @@ export function useRealtimeChat({
           // If all initial messages already exist, check if we need to replace
           // This handles the case where initialMessages loads with data after empty array
           if (prev.length === 0 && initialMessages.length > 0) {
-            console.log('[useRealtimeChat] Replacing empty messages with', initialMessages.length, 'messages');
             return initialMessages;
           }
         }
