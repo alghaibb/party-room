@@ -1,3 +1,6 @@
+"use client";
+
+import { useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import {
   Card,
@@ -8,7 +11,8 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { JoinRoomTrigger } from "../../_components/JoinRoomTrigger";
 import { RoomManagementDropdown } from "./RoomManagementDropdown";
-import { IconUsers, IconCrown, IconDeviceGamepad } from "@tabler/icons-react";
+import { ShareRoomDialog } from "./ShareRoomDialog";
+import { IconUsers, IconCrown, IconDeviceGamepad, IconShare } from "@tabler/icons-react";
 import { Room } from "@/types/room";
 import { Button } from "@/components/ui/button";
 
@@ -23,6 +27,7 @@ export function RoomCard({
   isVerified = true,
   currentUserId,
 }: RoomCardProps) {
+  const [shareDialogOpen, setShareDialogOpen] = useState(false);
   const isFull = room.currentPlayers >= room.maxPlayers;
   const playerPercentage = (room.currentPlayers / room.maxPlayers) * 100;
   const isOwner = currentUserId === room.owner.id;
@@ -46,13 +51,23 @@ export function RoomCard({
             >
               {room.code}
             </Badge>
-            <RoomManagementDropdown
-              roomId={room.id}
-              roomName={room.name}
-              roomCode={room.code}
-              isOwner={isOwner}
-              ownerName={room.owner.name}
-            />
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => setShareDialogOpen(true)}
+              className="h-7 w-7 opacity-70 hover:opacity-100"
+            >
+              <IconShare className="h-3.5 w-3.5" />
+            </Button>
+            {isOwner && (
+              <RoomManagementDropdown
+                roomId={room.id}
+                roomName={room.name}
+                roomCode={room.code}
+                isOwner={isOwner}
+                ownerName={room.owner.name}
+              />
+            )}
           </div>
         </div>
 
@@ -161,6 +176,13 @@ export function RoomCard({
           <JoinRoomTrigger isVerified={isVerified} className="w-full" />
         )}
       </CardFooter>
+
+      <ShareRoomDialog
+        open={shareDialogOpen}
+        onOpenChange={setShareDialogOpen}
+        roomCode={room.code}
+        roomName={room.name}
+      />
     </Card>
   );
 }

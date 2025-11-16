@@ -1,10 +1,13 @@
 "use client";
 
+import { useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
 import { RoomManagementDropdown } from "../../_components/RoomManagementDropdown";
 import { LeaveRoomButton } from "./LeaveRoomButton";
+import { ShareRoomDialog } from "../../_components/ShareRoomDialog";
 import {
   IconHome,
   IconUsers,
@@ -12,6 +15,7 @@ import {
   IconGlobe,
   IconLock,
   IconCopy,
+  IconShare,
 } from "@tabler/icons-react";
 import { toast } from "sonner";
 
@@ -36,6 +40,8 @@ interface RoomHeaderProps {
 }
 
 export function RoomHeader({ room }: RoomHeaderProps) {
+  const [shareDialogOpen, setShareDialogOpen] = useState(false);
+
   const handleCopyRoomCode = () => {
     navigator.clipboard.writeText(room.code);
     toast.success(`Room code ${room.code} copied!`);
@@ -60,6 +66,14 @@ export function RoomHeader({ room }: RoomHeaderProps) {
           </div>
 
           <div className="flex items-center gap-2">
+            <Button
+              variant="outline"
+              size="icon"
+              onClick={() => setShareDialogOpen(true)}
+              className="h-8 w-8"
+            >
+              <IconShare className="h-4 w-4" />
+            </Button>
             {room.isOwner ? (
               <RoomManagementDropdown
                 roomId={room.id}
@@ -131,6 +145,13 @@ export function RoomHeader({ room }: RoomHeaderProps) {
           </div>
         </div>
       </CardContent>
+
+      <ShareRoomDialog
+        open={shareDialogOpen}
+        onOpenChange={setShareDialogOpen}
+        roomCode={room.code}
+        roomName={room.name}
+      />
     </Card>
   );
 }
