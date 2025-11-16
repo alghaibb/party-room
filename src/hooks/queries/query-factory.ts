@@ -92,13 +92,20 @@ export function createParamFetchFn<T>(
   errorMessage: string
 ): (param: string) => Promise<T> {
   return async (param: string) => {
-    const response = await fetch(getEndpoint(param));
+    const endpoint = getEndpoint(param);
+    console.log(`[createParamFetchFn] Fetching from: ${endpoint}`);
+    const response = await fetch(endpoint);
+    console.log(`[createParamFetchFn] Response status: ${response.status} ${response.statusText}`);
     if (!response.ok) {
+      const errorText = await response.text();
+      console.error(`[createParamFetchFn] Error response:`, errorText);
       throw new Error(errorMessage);
     }
     const data = await response.json();
+    console.log(`[createParamFetchFn] Response data type:`, typeof data, Array.isArray(data) ? `array with ${data.length} items` : '');
     // Check if response is an error object
     if (data && typeof data === 'object' && 'error' in data) {
+      console.error(`[createParamFetchFn] Error in response:`, data.error);
       throw new Error(data.error || errorMessage);
     }
     return data;
