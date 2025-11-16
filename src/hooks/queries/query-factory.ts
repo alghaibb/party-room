@@ -103,10 +103,15 @@ export function createParamFetchFn<T>(
     }
     const data = await response.json();
     console.log(`[createParamFetchFn] Response data type:`, typeof data, Array.isArray(data) ? `array with ${data.length} items` : '');
+    console.log(`[createParamFetchFn] Response data:`, JSON.stringify(data).substring(0, 200));
     // Check if response is an error object
     if (data && typeof data === 'object' && 'error' in data) {
       console.error(`[createParamFetchFn] Error in response:`, data.error);
       throw new Error(data.error || errorMessage);
+    }
+    // If it's an object but not an array, it might be wrapped
+    if (data && typeof data === 'object' && !Array.isArray(data)) {
+      console.warn(`[createParamFetchFn] Response is object but not array:`, Object.keys(data));
     }
     return data;
   };
