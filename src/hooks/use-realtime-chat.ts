@@ -72,13 +72,15 @@ export function useRealtimeChat({
     // Always sync initialMessages when they change, but preserve realtime messages
     if (Array.isArray(initialMessages)) {
       setMessages((prev) => {
-        // If we haven't initialized yet, use initial messages
+        // If we haven't initialized yet, use initial messages (even if empty)
         if (!hasInitializedRef.current) {
           hasInitializedRef.current = true;
-          return initialMessages.length > 0 ? initialMessages : prev;
+          console.log('[useRealtimeChat] Initializing with', initialMessages.length, 'messages');
+          return initialMessages;
         }
         
-        // If initial messages are provided, merge them with existing messages
+        // After initialization, merge initial messages with existing messages
+        // This handles the case where messages load after component mounts
         if (initialMessages.length > 0) {
           // Create a map of existing message IDs for quick lookup
           const existingIds = new Set(prev.map((m) => m.id));
@@ -88,14 +90,22 @@ export function useRealtimeChat({
           
           // If there are new messages, merge and sort
           if (newMessages.length > 0) {
+            console.log('[useRealtimeChat] Merging', newMessages.length, 'new messages with', prev.length, 'existing');
             const merged = [...prev, ...newMessages].sort(
               (a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
             );
             return merged;
           }
+          
+          // If all initial messages already exist, check if we need to replace
+          // This handles the case where initialMessages loads with data after empty array
+          if (prev.length === 0 && initialMessages.length > 0) {
+            console.log('[useRealtimeChat] Replacing empty messages with', initialMessages.length, 'messages');
+            return initialMessages;
+          }
         }
         
-        // If initial messages is empty array and we have no messages, keep existing
+        // If initial messages is empty and we have existing messages, keep existing
         // This prevents clearing messages when React Query refetches with empty array
         return prev.length > 0 ? prev : initialMessages;
       });

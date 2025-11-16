@@ -21,6 +21,8 @@ export function RoomContent({ roomId }: RoomContentProps) {
   const { data: session } = useSession();
 
   // Show loader only when there's no cached data (first load)
+  // Note: dbMessages can be undefined initially, but we don't block rendering for it
+  // since messages will load asynchronously and update via initialMessages prop
   if (
     room === undefined ||
     availableGames === undefined ||
@@ -96,18 +98,27 @@ export function RoomContent({ roomId }: RoomContentProps) {
     );
   }
 
-  const initialMessages = messagesArray.map((msg) => ({
-    id: msg.id,
-    content: msg.content,
-    user: {
-      id: msg.user.id,
-      name: msg.user.name,
-    },
-    createdAt:
-      typeof msg.createdAt === "string"
-        ? msg.createdAt
-        : new Date(msg.createdAt).toISOString(),
-  }));
+  // Transform messages to the format expected by ChatArea
+  // Only process if we have messages (dbMessages might be undefined initially)
+  const initialMessages = dbMessages && Array.isArray(dbMessages) && dbMessages.length > 0
+    ? dbMessages.map((msg) => ({
+        id: msg.id,
+        content: msg.content,
+        user: {
+          id: msg.user.id,
+          name: msg.user.name,
+        },
+        createdAt:
+          typeof msg.createdAt === "string"
+            ? msg.createdAt
+            : new Date(msg.createdAt).toISOString(),
+      }))
+    : [];
+
+  // Debug logging
+  if (typeof window !== 'undefined') {
+    console.log('[RoomContent] dbMessages:', dbMessages?.length || 0, 'initialMessages:', initialMessages.length);
+  }
 
   return (
     <>

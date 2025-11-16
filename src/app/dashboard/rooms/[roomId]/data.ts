@@ -170,7 +170,7 @@ export const getRoomMessages = cache(async (roomId: string) => {
     // Reverse to get chronological order (oldest to newest)
     messages.reverse();
 
-    return messages.map(message => ({
+    const formattedMessages = messages.map(message => ({
       id: message.id,
       content: message.content,
       userId: message.userId,
@@ -184,9 +184,12 @@ export const getRoomMessages = cache(async (roomId: string) => {
       },
     }));
 
+    console.log(`[getRoomMessages] Fetched ${formattedMessages.length} messages for room ${roomId}`);
+    return formattedMessages;
+
   } catch (error) {
     console.error("Error fetching room messages:", error);
-    return [];
+    throw error; // Re-throw instead of returning empty array to let React Query handle it
   }
 });
 
