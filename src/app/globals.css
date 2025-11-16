@@ -261,12 +261,14 @@
 }
 
 /* Fallback for browsers that don't support backdrop-filter */
-@supports not (backdrop-filter: blur(12px)) and not (-webkit-backdrop-filter: blur(12px)) {
-  .backdrop-blur-xl,
-  .backdrop-blur-sm,
-  [class*="backdrop-blur"] {
-    background-color: var(--background) !important;
-    opacity: 0.95 !important;
+@supports not (backdrop-filter: blur(12px)) {
+  @supports not (-webkit-backdrop-filter: blur(12px)) {
+    .backdrop-blur-xl,
+    .backdrop-blur-sm,
+    [class*="backdrop-blur"] {
+      background-color: var(--background) !important;
+      opacity: 0.95 !important;
+    }
   }
 }
 
