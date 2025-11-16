@@ -47,7 +47,7 @@ export function CreateRoomForm() {
 
       const result = await createRoom(formData);
 
-      if (!result?.success) {
+      if (!result?.success || !result.roomId) {
         toast.error(result?.message || "Failed to create room");
         return;
       }

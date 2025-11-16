@@ -8,7 +8,7 @@ import { useAppNavigation } from "@/lib/navigation";
 export function useRoomActions() {
   const [isLoading, setIsLoading] = useState(false);
   const { navigateToRoom, navigateToRooms } = useAppNavigation();
-  
+
   // Get room events context if available (for delete action)
   const roomEvents = useRoomEvents();
   const broadcastRoomDeleted = roomEvents?.broadcastRoomDeleted;
@@ -19,7 +19,7 @@ export function useRoomActions() {
     try {
       const result = await joinRoom(roomCode);
 
-      if (!result?.success) {
+      if (!result?.success || !result.roomId) {
         toast.error(result?.message || "Failed to join room");
         return false;
       }
