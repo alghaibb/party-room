@@ -12,7 +12,12 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { JoinRoomTrigger } from "../../_components/JoinRoomTrigger";
 import { RoomManagementDropdown } from "./RoomManagementDropdown";
 import { ShareRoomDialog } from "./ShareRoomDialog";
-import { IconUsers, IconCrown, IconDeviceGamepad, IconShare } from "@tabler/icons-react";
+import {
+  IconUsers,
+  IconCrown,
+  IconDeviceGamepad,
+  IconShare,
+} from "@tabler/icons-react";
 import { Room } from "@/types/room";
 import { Button } from "@/components/ui/button";
 
@@ -130,7 +135,7 @@ export function RoomCard({
         </div>
 
         {/* Online Members Preview */}
-        {room.members.length > 0 && (
+        {Array.isArray(room.members) && room.members.length > 0 && (
           <div className="flex items-center gap-1">
             <div className="flex -space-x-2">
               {room.members.slice(0, 3).map((member, index) => (

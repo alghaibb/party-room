@@ -3,7 +3,6 @@ import { redirect } from "next/navigation";
 import { getSession } from "@/lib/get-session";
 import prisma from "@/lib/prisma";
 import { roomCodeSchema } from "@/lib/validations/room/room.schema";
-import { joinRoom } from "@/app/dashboard/rooms/actions";
 import { JoinRoomPageContent } from "./_components/JoinRoomPageContent";
 
 export const dynamic = "force-dynamic";
@@ -54,6 +53,14 @@ export default async function JoinRoomPage({ params }: JoinRoomPageProps) {
           image: true,
         },
       },
+      members: session?.user ? {
+        where: {
+          userId: session.user.id,
+        },
+        select: {
+          userId: true,
+        },
+      } : false,
       _count: {
         select: { members: true },
       },
@@ -83,31 +90,10 @@ export default async function JoinRoomPage({ params }: JoinRoomPageProps) {
     );
   }
 
-  // If user is authenticated and verified, try to auto-join
-  if (session?.user?.emailVerified) {
-    const result = await joinRoom(validatedRoomCode);
-
-    if (result.success && result.roomId) {
-      // Redirect to the room
-      redirect(`/dashboard/rooms/${result.roomId}`);
-    }
-    // If join failed (e.g., room full), show the page with error message
-    return (
-      <JoinRoomPageContent
-        isValid={true}
-        roomCode={roomCode}
-        roomName={room.name}
-        roomDescription={room.description}
-        currentPlayers={room._count.members}
-        maxPlayers={room.maxPlayers}
-        isPublic={room.isPublic}
-        owner={room.owner}
-        isAuthenticated={!!session?.user}
-        isVerified={session?.user?.emailVerified ?? false}
-        isFull={room._count.members >= room.maxPlayers}
-        error={result.message}
-      />
-    );
+  // If user is authenticated, verified, and already a member, redirect to room
+  const userMembership = Array.isArray(room.members) ? room.members : [];
+  if (session?.user?.emailVerified && userMembership.length > 0) {
+    redirect(`/dashboard/rooms/${room.id}`);
   }
 
   // Show join page (not authenticated or not verified)

@@ -91,6 +91,9 @@ export function RoomContent({ roomId }: RoomContentProps) {
         : new Date(msg.createdAt).toISOString(),
   }));
 
+  // Ensure members is always an array
+  const members = Array.isArray(room.members) ? room.members : [];
+
   return (
     <>
       <div className="lg:w-80 flex flex-col gap-4">
@@ -99,7 +102,7 @@ export function RoomContent({ roomId }: RoomContentProps) {
         <div className="flex-1">
           <PlayerList
             roomId={room.id}
-            members={room.members.map((m) => ({
+            members={members.map((m) => ({
               ...m,
               user: {
                 ...m.user,
