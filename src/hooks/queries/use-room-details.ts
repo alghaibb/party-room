@@ -10,7 +10,22 @@ const fetchRoomDetails = createParamFetchFn<RoomDetails>(
 
 export const useRoomDetails = createParamQueryHook({
   baseQueryKey: ["rooms"],
-  fetchFn: fetchRoomDetails,
+  fetchFn: async (roomId: string) => {
+    try {
+      const data = await fetchRoomDetails(roomId);
+      // Ensure members is always an array
+      if (data && typeof data === 'object' && 'members' in data) {
+        return {
+          ...data,
+          members: Array.isArray(data.members) ? data.members : [],
+        } as RoomDetails;
+      }
+      return data;
+    } catch (error) {
+      console.error("Error fetching room details:", error);
+      throw error;
+    }
+  },
   staleTime: 30 * 1000, // 30 seconds
   getEnabled: (roomId) => !!roomId,
 });

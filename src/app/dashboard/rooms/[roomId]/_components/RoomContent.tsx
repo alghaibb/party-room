@@ -78,7 +78,25 @@ export function RoomContent({ roomId }: RoomContentProps) {
     );
   }
 
-  const initialMessages = (dbMessages || []).map((msg) => ({
+  // Ensure all data is arrays before processing
+  const messagesArray = Array.isArray(dbMessages) ? dbMessages : [];
+  const members = room && typeof room === 'object' && 'members' in room 
+    ? (Array.isArray(room.members) ? room.members : [])
+    : [];
+  const gamesArray = Array.isArray(availableGames) ? availableGames : [];
+
+  // Defensive check: ensure room exists and has required properties
+  if (!room || typeof room !== 'object' || !room.id) {
+    return (
+      <div className="flex flex-1 items-center justify-center">
+        <div className="text-center">
+          <p className="text-muted-foreground">Loading room data...</p>
+        </div>
+      </div>
+    );
+  }
+
+  const initialMessages = messagesArray.map((msg) => ({
     id: msg.id,
     content: msg.content,
     user: {
@@ -90,9 +108,6 @@ export function RoomContent({ roomId }: RoomContentProps) {
         ? msg.createdAt
         : new Date(msg.createdAt).toISOString(),
   }));
-
-  // Ensure members is always an array
-  const members = Array.isArray(room.members) ? room.members : [];
 
   return (
     <>
@@ -132,7 +147,7 @@ export function RoomContent({ roomId }: RoomContentProps) {
 
       <div className="flex-1 flex flex-col gap-4 min-h-0 has-[.chat-minimized]:gap-0">
         <div className="flex-1 min-h-0 has-[~_.chat-minimized]:flex-none has-[~_.chat-minimized]:h-full">
-          <GameArea room={room} availableGames={Array.isArray(availableGames) ? availableGames : []} />
+          <GameArea room={room} availableGames={gamesArray} />
         </div>
         <div className="h-96 has-[.chat-minimized]:h-auto">
           <ChatArea

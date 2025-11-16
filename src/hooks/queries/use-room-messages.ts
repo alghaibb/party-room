@@ -10,7 +10,16 @@ const fetchRoomMessages = createParamFetchFn<RoomMessage[]>(
 
 export const useRoomMessages = createParamQueryHook({
   baseQueryKey: ["rooms"],
-  fetchFn: (roomId: string) => fetchRoomMessages(roomId),
+  fetchFn: async (roomId: string) => {
+    try {
+      const data = await fetchRoomMessages(roomId);
+      // Ensure we always return an array
+      return Array.isArray(data) ? data : [];
+    } catch (error) {
+      console.error("Error fetching room messages:", error);
+      return [];
+    }
+  },
   staleTime: 10 * 1000, // 10 seconds
   getEnabled: (roomId) => !!roomId,
 });
