@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -21,7 +22,7 @@ import { IconDots, IconTrash, IconEdit, IconShare } from "@tabler/icons-react";
 import { useModalStore } from "@/stores/modal-store";
 import { useRoomActions } from "@/hooks/use-room-actions";
 import { LoadingButton } from "@/components/LoadingButton";
-import { toast } from "sonner";
+import { ShareRoomDialog } from "./ShareRoomDialog";
 
 interface RoomManagementDropdownProps {
   roomId: string;
@@ -40,14 +41,14 @@ export function RoomManagementDropdown({
 }: RoomManagementDropdownProps) {
   const { deleteRoomOpen, openDeleteRoom, closeDeleteRoom } = useModalStore();
   const { isLoading, handleDeleteRoom } = useRoomActions();
+  const [shareDialogOpen, setShareDialogOpen] = useState(false);
 
   if (!isOwner) {
     return null; // Don't show dropdown for non-owners
   }
 
-  const handleCopyRoomCode = () => {
-    navigator.clipboard.writeText(roomCode);
-    toast.success(`Room code ${roomCode} copied to clipboard!`);
+  const handleShareClick = () => {
+    setShareDialogOpen(true);
   };
 
   const handleDeleteClick = () => {
@@ -75,9 +76,9 @@ export function RoomManagementDropdown({
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" className="w-48">
-          <DropdownMenuItem onClick={handleCopyRoomCode}>
+          <DropdownMenuItem onClick={handleShareClick}>
             <IconShare className="mr-2 h-4 w-4" />
-            Copy Room Code
+            Share Room
           </DropdownMenuItem>
           <DropdownMenuItem>
             <IconEdit className="mr-2 h-4 w-4" />
@@ -93,6 +94,14 @@ export function RoomManagementDropdown({
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
+
+      {/* Share Dialog */}
+      <ShareRoomDialog
+        open={shareDialogOpen}
+        onOpenChange={setShareDialogOpen}
+        roomCode={roomCode}
+        roomName={roomName}
+      />
 
       {/* Delete Confirmation Dialog */}
       <AlertDialog open={deleteRoomOpen} onOpenChange={closeDeleteRoom}>

@@ -9,8 +9,6 @@ import { useRoomMessages } from "@/hooks/queries/use-room-messages";
 import { useAvailableGames } from "@/hooks/queries/use-available-games";
 import { useSession } from "@/hooks/queries/use-session";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { RoomEventsProvider } from "@/contexts/room-events-context";
-import { useCallback } from "react";
 
 interface RoomContentProps {
   roomId: string;
@@ -26,7 +24,8 @@ export function RoomContent({ roomId }: RoomContentProps) {
   if (
     room === undefined ||
     availableGames === undefined ||
-    session === undefined
+    !session ||
+    !session.user
   ) {
     return (
       <div className="flex flex-1 flex-col lg:flex-row gap-6 h-full min-h-0">
