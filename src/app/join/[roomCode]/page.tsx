@@ -53,14 +53,16 @@ export default async function JoinRoomPage({ params }: JoinRoomPageProps) {
           image: true,
         },
       },
-      members: session?.user ? {
-        where: {
-          userId: session.user.id,
-        },
-        select: {
-          userId: true,
-        },
-      } : false,
+      members: session?.user
+        ? {
+            where: {
+              userId: session.user.id,
+            },
+            select: {
+              userId: true,
+            },
+          }
+        : false,
       _count: {
         select: { members: true },
       },
