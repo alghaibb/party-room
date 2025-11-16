@@ -69,22 +69,35 @@ export function useRealtimeChat({
 
   // Sync initialMessages when they become available (e.g., after React Query loads)
   useEffect(() => {
-    if (initialMessages.length > 0) {
+    // Always sync initialMessages when they change, but preserve realtime messages
+    if (Array.isArray(initialMessages)) {
       setMessages((prev) => {
-        // If we haven't initialized yet, or if current messages are empty, use initial messages
-        if (!hasInitializedRef.current || prev.length === 0) {
+        // If we haven't initialized yet, use initial messages
+        if (!hasInitializedRef.current) {
           hasInitializedRef.current = true;
-          return initialMessages;
+          return initialMessages.length > 0 ? initialMessages : prev;
         }
-        // Otherwise, merge initial messages with existing ones (avoid duplicates)
-        const existingIds = new Set(prev.map((m) => m.id));
-        const newMessages = initialMessages.filter((m) => !existingIds.has(m.id));
-        if (newMessages.length > 0) {
-          return [...prev, ...newMessages].sort(
-            (a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
-          );
+        
+        // If initial messages are provided, merge them with existing messages
+        if (initialMessages.length > 0) {
+          // Create a map of existing message IDs for quick lookup
+          const existingIds = new Set(prev.map((m) => m.id));
+          
+          // Filter out messages that already exist
+          const newMessages = initialMessages.filter((m) => !existingIds.has(m.id));
+          
+          // If there are new messages, merge and sort
+          if (newMessages.length > 0) {
+            const merged = [...prev, ...newMessages].sort(
+              (a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
+            );
+            return merged;
+          }
         }
-        return prev;
+        
+        // If initial messages is empty array and we have no messages, keep existing
+        // This prevents clearing messages when React Query refetches with empty array
+        return prev.length > 0 ? prev : initialMessages;
       });
     }
   }, [initialMessages]);
