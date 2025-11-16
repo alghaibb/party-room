@@ -147,6 +147,14 @@ export const getRoomMessages = cache(async (roomId: string) => {
       throw new Error("Not authenticated");
     }
 
+    console.log(`[getRoomMessages] Querying messages for roomId: ${roomId}`);
+    
+    // First, check how many messages exist for this room
+    const totalCount = await prisma.message.count({
+      where: { roomId },
+    });
+    console.log(`[getRoomMessages] Total messages in DB for room ${roomId}: ${totalCount}`);
+
     // Get the last 50 messages by ordering descending and taking first 50, then reversing
     const messages = await prisma.message.findMany({
       where: { roomId },
@@ -166,6 +174,8 @@ export const getRoomMessages = cache(async (roomId: string) => {
       },
       take: 50, // Take the last 50 messages
     });
+
+    console.log(`[getRoomMessages] Found ${messages.length} messages from query`);
 
     // Reverse to get chronological order (oldest to newest)
     messages.reverse();
