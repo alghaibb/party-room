@@ -248,3 +248,25 @@
   background-color: hsl(var(--primary) / 0.3);
 }
 
+/* Edge browser compatibility for backdrop-filter */
+/* Vendor prefixes for backdrop-filter (Edge/Safari support) */
+.backdrop-blur-xl {
+  -webkit-backdrop-filter: blur(24px);
+  backdrop-filter: blur(24px);
+}
+
+.backdrop-blur-sm {
+  -webkit-backdrop-filter: blur(4px);
+  backdrop-filter: blur(4px);
+}
+
+/* Fallback for browsers that don't support backdrop-filter */
+@supports not (backdrop-filter: blur(12px)) and not (-webkit-backdrop-filter: blur(12px)) {
+  .backdrop-blur-xl,
+  .backdrop-blur-sm,
+  [class*="backdrop-blur"] {
+    background-color: var(--background) !important;
+    opacity: 0.95 !important;
+  }
+}
+

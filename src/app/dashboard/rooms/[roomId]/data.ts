@@ -147,6 +147,14 @@ export const getRoomMessages = cache(async (roomId: string) => {
       throw new Error("Not authenticated");
     }
 
+    // Get total count first to calculate skip
+    const totalMessages = await prisma.message.count({
+      where: { roomId },
+    });
+
+    // Get the last 50 messages (or all if less than 50)
+    const skip = Math.max(0, totalMessages - 50);
+    
     const messages = await prisma.message.findMany({
       where: { roomId },
       include: {
@@ -161,9 +169,10 @@ export const getRoomMessages = cache(async (roomId: string) => {
         },
       },
       orderBy: {
-        createdAt: "asc",
+        createdAt: "asc", // Order ascending after skipping to get last 50
       },
-      take: 50, // Last 50 messages
+      skip,
+      take: 50,
     });
 
     return messages.map(message => ({
