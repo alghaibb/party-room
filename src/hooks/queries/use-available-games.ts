@@ -10,7 +10,16 @@ const fetchAvailableGames = createFetchFn<Game[]>(
 
 export const useAvailableGames = createQueryHook({
   queryKey: ["games"],
-  fetchFn: fetchAvailableGames,
+  fetchFn: async () => {
+    try {
+      const data = await fetchAvailableGames();
+      // Ensure we always return an array
+      return Array.isArray(data) ? data : [];
+    } catch (error) {
+      console.error("Error fetching available games:", error);
+      return [];
+    }
+  },
   staleTime: 5 * 60 * 1000, // 5 minutes (games don't change often)
 });
 

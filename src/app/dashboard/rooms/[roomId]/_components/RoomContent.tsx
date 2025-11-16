@@ -132,7 +132,7 @@ export function RoomContent({ roomId }: RoomContentProps) {
 
       <div className="flex-1 flex flex-col gap-4 min-h-0 has-[.chat-minimized]:gap-0">
         <div className="flex-1 min-h-0 has-[~_.chat-minimized]:flex-none has-[~_.chat-minimized]:h-full">
-          <GameArea room={room} availableGames={availableGames} />
+          <GameArea room={room} availableGames={Array.isArray(availableGames) ? availableGames : []} />
         </div>
         <div className="h-96 has-[.chat-minimized]:h-auto">
           <ChatArea

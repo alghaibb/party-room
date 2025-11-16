@@ -85,7 +85,9 @@ export function GameArea({ room, availableGames }: GameAreaProps) {
             <div className="flex items-center justify-center gap-4 text-sm">
               <div className="flex items-center gap-2">
                 <IconUsers className="w-5 h-5 text-primary" />
-                <span className="font-semibold">{room.currentGame.results.length} playing</span>
+                <span className="font-semibold">
+                  {Array.isArray(room.currentGame.results) ? room.currentGame.results.length : 0} playing
+                </span>
               </div>
               <Badge variant="outline" className="capitalize rounded-full border-foreground/20">
                 {room.currentGame.game.category}
@@ -128,7 +130,7 @@ export function GameArea({ room, availableGames }: GameAreaProps) {
             </p>
 
             <div className="grid gap-4">
-              {availableGames
+              {(Array.isArray(availableGames) ? availableGames : [])
                 .filter(
                   (game) =>
                     game.minPlayers <= room.memberCount &&

@@ -10,7 +10,16 @@ const fetchActiveRooms = createFetchFn<ActiveRoom[]>(
 
 export const useActiveRooms = createQueryHook({
   queryKey: ["rooms", "active"],
-  fetchFn: fetchActiveRooms,
+  fetchFn: async () => {
+    try {
+      const data = await fetchActiveRooms();
+      // Ensure we always return an array
+      return Array.isArray(data) ? data : [];
+    } catch (error) {
+      console.error("Error fetching active rooms:", error);
+      return [];
+    }
+  },
   staleTime: 30 * 1000, // 30 seconds
 });
 

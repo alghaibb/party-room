@@ -10,7 +10,16 @@ const fetchUserRooms = createFetchFn<UserRoom[]>(
 
 export const useUserRooms = createQueryHook({
   queryKey: ["rooms", "user"],
-  fetchFn: fetchUserRooms,
+  fetchFn: async () => {
+    try {
+      const data = await fetchUserRooms();
+      // Ensure we always return an array
+      return Array.isArray(data) ? data : [];
+    } catch (error) {
+      console.error("Error fetching user rooms:", error);
+      return [];
+    }
+  },
   staleTime: 30 * 1000, // 30 seconds
 });
 

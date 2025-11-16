@@ -22,8 +22,11 @@ export function RoomGrid() {
     );
   }
 
+  // Ensure rooms is always an array
+  const roomsArray = Array.isArray(rooms) ? rooms : [];
+
   // Show empty state if data exists but array is empty
-  if (rooms.length === 0) {
+  if (roomsArray.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center py-12 text-center">
         <div className="w-16 h-16 bg-muted rounded-full flex items-center justify-center mb-4">
@@ -39,7 +42,7 @@ export function RoomGrid() {
 
   return (
     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-      {rooms.map((room) => (
+      {roomsArray.map((room) => (
         <RoomCard
           key={room.id}
           room={room}

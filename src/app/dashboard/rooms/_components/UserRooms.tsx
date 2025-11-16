@@ -28,7 +28,10 @@ export function UserRooms() {
     );
   }
 
-  if (userRooms.length === 0) {
+  // Ensure userRooms is always an array
+  const userRoomsArray = Array.isArray(userRooms) ? userRooms : [];
+
+  if (userRoomsArray.length === 0) {
     return (
       <Card className="rounded-2xl bg-background/40 backdrop-blur-xl border border-foreground/10 p-8">
         <div className="text-center space-y-3">
@@ -45,7 +48,7 @@ export function UserRooms() {
 
   return (
     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-      {userRooms.map((room) => (
+      {userRoomsArray.map((room) => (
         <Card key={room.id} className="rounded-2xl bg-background/40 backdrop-blur-xl border border-foreground/10 shadow-lg hover:shadow-xl transition-all hover:scale-[1.02]">
           <CardContent className="p-5">
             <div className="flex items-start justify-between mb-4">

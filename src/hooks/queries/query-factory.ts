@@ -75,7 +75,12 @@ export function createFetchFn<T>(endpoint: string, errorMessage: string): () => 
     if (!response.ok) {
       throw new Error(errorMessage);
     }
-    return response.json();
+    const data = await response.json();
+    // Check if response is an error object
+    if (data && typeof data === 'object' && 'error' in data) {
+      throw new Error(data.error || errorMessage);
+    }
+    return data;
   };
 }
 
@@ -91,7 +96,12 @@ export function createParamFetchFn<T>(
     if (!response.ok) {
       throw new Error(errorMessage);
     }
-    return response.json();
+    const data = await response.json();
+    // Check if response is an error object
+    if (data && typeof data === 'object' && 'error' in data) {
+      throw new Error(data.error || errorMessage);
+    }
+    return data;
   };
 }
 
