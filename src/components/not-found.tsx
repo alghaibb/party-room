@@ -20,7 +20,7 @@ export function NotFound({ showSidebar }: NotFoundProps) {
 
   return (
     <div
-      className={`absolute inset-0 flex flex-col items-center justify-center px-4 overflow-hidden ${showSidebar || isDashboard ? "" : "fixed"}`}
+      className={`absolute inset-0 flex flex-col items-center justify-center px-4 overflow-hidden pt-20 sm:pt-0 ${showSidebar || isDashboard ? "" : "fixed"}`}
     >
       {/* Background Effects */}
       <div className="absolute inset-0 -z-10 overflow-hidden pointer-events-none">
@@ -35,7 +35,7 @@ export function NotFound({ showSidebar }: NotFoundProps) {
         />
       </div>
 
-      <div className="max-w-2xl w-full text-center space-y-8 relative z-10">
+      <div className="max-w-2xl w-full text-center space-y-6 sm:space-y-8 relative z-10">
         {/* Animated 404 Number */}
         <div className="relative inline-block">
           <div className="absolute inset-0 bg-primary/20 blur-3xl rounded-full animate-pulse -z-10" />
@@ -72,57 +72,69 @@ export function NotFound({ showSidebar }: NotFoundProps) {
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-6">
           {isDashboard ? (
             <>
-                  <Button
-                    asChild
-                    variant="modern"
-                    size="modern-md"
-                    className="group shadow-lg hover:shadow-xl transition-all"
-                  >
-                    <Link href="/dashboard" prefetch={true} className="flex items-center gap-2">
-                      <IconHome className="w-5 h-5" />
-                      Back to Dashboard
-                    </Link>
-                  </Button>
-                  <Button
-                    asChild
-                    variant="outline"
-                    size="modern-md"
-                    className="group border-foreground/20 hover:bg-accent/50 transition-all"
-                  >
-                    <Link
-                      href="/dashboard/rooms"
-                      prefetch={true}
-                      className="flex items-center gap-2"
-                    >
-                      <IconRocket className="w-5 h-5" />
-                      Browse Rooms
-                    </Link>
-                  </Button>
+              <Button
+                asChild
+                variant="modern"
+                size="modern-md"
+                className="group shadow-lg hover:shadow-xl transition-all"
+              >
+                <Link
+                  href="/dashboard"
+                  prefetch={true}
+                  className="flex items-center gap-2"
+                >
+                  <IconHome className="w-5 h-5" />
+                  Back to Dashboard
+                </Link>
+              </Button>
+              <Button
+                asChild
+                variant="outline"
+                size="modern-md"
+                className="group border-foreground/20 hover:bg-accent/50 transition-all"
+              >
+                <Link
+                  href="/dashboard/rooms"
+                  prefetch={true}
+                  className="flex items-center gap-2"
+                >
+                  <IconRocket className="w-5 h-5" />
+                  Browse Rooms
+                </Link>
+              </Button>
             </>
           ) : (
             <>
-                  <Button
-                    asChild
-                    variant="modern"
-                    size="modern-md"
-                    className="group shadow-lg hover:shadow-xl transition-all"
-                  >
-                    <Link href="/" prefetch={true} className="flex items-center gap-2">
-                      <IconHome className="w-5 h-5" />
-                      Go Home
-                    </Link>
-                  </Button>
-                  <Button
-                    asChild
-                    variant="outline"
-                    size="modern-md"
-                    className="group border-foreground/20 hover:bg-accent/50 transition-all"
-                  >
-                    <Link href="/sign-in" prefetch={true} className="flex items-center gap-2">
-                      <IconRocket className="w-5 h-5" />
-                      Sign In
-                    </Link>
-                  </Button>
+              <Button
+                asChild
+                variant="modern"
+                size="modern-md"
+                className="group shadow-lg hover:shadow-xl transition-all"
+              >
+                <Link
+                  href="/"
+                  prefetch={true}
+                  className="flex items-center gap-2"
+                >
+                  <IconHome className="w-5 h-5" />
+                  Go Home
+                </Link>
+              </Button>
+              <Button
+                asChild
+                variant="outline"
+                size="modern-md"
+                className="group border-foreground/20 hover:bg-accent/50 transition-all"
+              >
+                <Link
+                  href="/sign-in"
+                  prefetch={true}
+                  className="flex items-center gap-2"
+                >
+                  <IconRocket className="w-5 h-5" />
+                  Sign In
+                </Link>
+              </Button>
             </>
           )}
         </div>

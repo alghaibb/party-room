@@ -102,7 +102,7 @@ export function ShareRoomDialog({
               <Input
                 value={inviteLink}
                 readOnly
-                className="font-mono text-sm"
+                className="font-mono text-sm min-w-0 flex-1"
                 onClick={handleCopyLink}
               />
               <Button
@@ -129,7 +129,7 @@ export function ShareRoomDialog({
             <div className="flex gap-2">
               <Badge
                 variant="outline"
-                className="text-lg font-mono px-4 py-2 rounded-full border-foreground/20 flex-1 justify-center cursor-pointer hover:bg-accent/50"
+                className="text-lg font-mono px-4 py-2 rounded-full border-foreground/20 flex-1 justify-center cursor-pointer hover:bg-accent/50 min-w-0"
                 onClick={handleCopyCode}
               >
                 {roomCode}
@@ -151,12 +151,12 @@ export function ShareRoomDialog({
           {/* Social Sharing */}
           <div className="space-y-2">
             <label className="text-sm font-medium">Share on</label>
-            <div className="flex gap-2">
+            <div className="flex flex-col sm:flex-row gap-2">
               <Button
                 onClick={() => handleSocialShare("twitter")}
                 variant="outline"
                 size="sm"
-                className="flex-1"
+                className="w-full sm:flex-1"
               >
                 <IconBrandTwitter className="w-4 h-4 mr-2" />
                 Twitter
@@ -165,7 +165,7 @@ export function ShareRoomDialog({
                 onClick={() => handleSocialShare("facebook")}
                 variant="outline"
                 size="sm"
-                className="flex-1"
+                className="w-full sm:flex-1"
               >
                 <IconBrandFacebook className="w-4 h-4 mr-2" />
                 Facebook
@@ -174,7 +174,7 @@ export function ShareRoomDialog({
                 onClick={() => handleSocialShare("whatsapp")}
                 variant="outline"
                 size="sm"
-                className="flex-1"
+                className="w-full sm:flex-1"
               >
                 <IconBrandWhatsapp className="w-4 h-4 mr-2" />
                 WhatsApp
