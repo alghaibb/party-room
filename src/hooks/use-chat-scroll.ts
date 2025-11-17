@@ -1,9 +1,9 @@
-import { useRef } from "react";
+import { useCallback, useRef } from "react";
 
 export function useChatScroll() {
   const containerRef = useRef<HTMLDivElement>(null);
 
-  const scrollToBottom = () => {
+  const scrollToBottom = useCallback(() => {
     if (!containerRef.current) return;
 
     const container = containerRef.current;
@@ -11,7 +11,7 @@ export function useChatScroll() {
       top: container.scrollHeight,
       behavior: "smooth",
     });
-  };
+  }, []);
 
   return { containerRef, scrollToBottom };
 }

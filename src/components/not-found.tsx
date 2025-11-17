@@ -78,10 +78,7 @@ export function NotFound({ showSidebar }: NotFoundProps) {
                 size="modern-md"
                 className="group shadow-lg hover:shadow-xl transition-all w-full md:w-auto"
               >
-                <Link
-                  href="/dashboard"
-                  className="flex items-center gap-2"
-                >
+                <Link href="/dashboard" className="flex items-center gap-2">
                   <IconHome className="w-5 h-5" />
                   Back to Dashboard
                 </Link>
@@ -109,10 +106,7 @@ export function NotFound({ showSidebar }: NotFoundProps) {
                 size="modern-md"
                 className="group shadow-lg hover:shadow-xl transition-all"
               >
-                <Link
-                  href="/"
-                  className="flex items-center gap-2"
-                >
+                <Link href="/" className="flex items-center gap-2">
                   <IconHome className="w-5 h-5" />
                   Go Home
                 </Link>
@@ -123,10 +117,7 @@ export function NotFound({ showSidebar }: NotFoundProps) {
                 size="modern-md"
                 className="group border-foreground/20 hover:bg-accent/50 transition-all"
               >
-                <Link
-                  href="/sign-in"
-                  className="flex items-center gap-2"
-                >
+                <Link href="/sign-in" className="flex items-center gap-2">
                   <IconRocket className="w-5 h-5" />
                   Sign In
                 </Link>
