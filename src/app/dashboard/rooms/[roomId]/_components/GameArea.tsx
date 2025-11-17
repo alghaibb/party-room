@@ -75,14 +75,14 @@ export function GameArea({ room, availableGames }: GameAreaProps) {
           </CardTitle>
         </CardHeader>
 
-        <CardContent className="space-y-6">
-          <div className="p-8 bg-[linear-gradient(135deg,var(--primary)/10,var(--accent)/10)] rounded-2xl text-center border border-foreground/10">
-            <IconPlayerPlay className="w-16 h-16 mx-auto text-primary mb-6" />
-            <h3 className="font-bold text-xl mb-3">Game in Progress</h3>
-            <p className="text-muted-foreground/80 mb-6">
+        <CardContent className="space-y-4 sm:space-y-6">
+          <div className="p-4 sm:p-6 md:p-8 bg-[linear-gradient(135deg,var(--primary)/10,var(--accent)/10)] rounded-xl sm:rounded-2xl text-center border border-foreground/10">
+            <IconPlayerPlay className="w-12 h-12 sm:w-16 sm:h-16 mx-auto text-primary mb-4 sm:mb-6" />
+            <h3 className="font-bold text-lg sm:text-xl mb-2 sm:mb-3">Game in Progress</h3>
+            <p className="text-sm sm:text-base text-muted-foreground/80 mb-4 sm:mb-6">
               {room.currentGame.game.description}
             </p>
-            <div className="flex items-center justify-center gap-4 text-sm">
+            <div className="flex items-center justify-center gap-3 sm:gap-4 text-xs sm:text-sm flex-wrap">
               <div className="flex items-center gap-2">
                 <IconUsers className="w-5 h-5 text-primary" />
                 <span className="font-semibold">
@@ -96,7 +96,7 @@ export function GameArea({ room, availableGames }: GameAreaProps) {
           </div>
 
           {room.currentGame.status === "waiting" && room.isOwner && (
-            <Button variant="modern" size="modern-md" className="w-full">Start Game</Button>
+            <Button variant="modern" size="modern-sm" className="w-full sm:w-auto sm:px-8">Start Game</Button>
           )}
         </CardContent>
       </Card>
@@ -115,17 +115,17 @@ export function GameArea({ room, availableGames }: GameAreaProps) {
 
       <CardContent>
         {room.memberCount < 2 ? (
-          <div className="flex flex-col items-center justify-center py-16 text-center">
-            <IconUsers className="w-16 h-16 text-muted-foreground/60 mb-6" />
-            <h3 className="font-bold text-lg mb-3">Waiting for Players</h3>
-            <p className="text-muted-foreground/80 text-sm max-w-md">
+          <div className="flex flex-col items-center justify-center py-8 sm:py-12 md:py-16 text-center px-4">
+            <IconUsers className="w-12 h-12 sm:w-16 sm:h-16 text-muted-foreground/60 mb-4 sm:mb-6" />
+            <h3 className="font-bold text-base sm:text-lg mb-2 sm:mb-3">Waiting for Players</h3>
+            <p className="text-muted-foreground/80 text-xs sm:text-sm max-w-md">
               You need at least 2 players to start a game. Invite friends with
-              room code: <strong className="font-mono text-primary">{room.code}</strong>
+              room code: <strong className="font-mono text-primary break-all">{room.code}</strong>
             </p>
           </div>
         ) : (
-          <div className="space-y-6">
-            <p className="text-sm text-muted-foreground/80 font-medium">
+          <div className="space-y-4 sm:space-y-6">
+            <p className="text-xs sm:text-sm text-muted-foreground/80 font-medium">
               Select a game to play with your party:
             </p>
 
@@ -141,18 +141,18 @@ export function GameArea({ room, availableGames }: GameAreaProps) {
                     key={game.id}
                     className="p-4 border border-foreground/10 rounded-2xl bg-background/30 backdrop-blur-sm hover:bg-background/50 hover:border-foreground/20 cursor-pointer transition-all hover:scale-[1.02]"
                   >
-                    <div className="flex items-start justify-between mb-3">
-                      <div className="flex-1">
-                        <h4 className="font-bold text-base mb-1">{game.name}</h4>
+                    <div className="flex items-start justify-between mb-2 sm:mb-3 gap-2">
+                      <div className="flex-1 min-w-0">
+                        <h4 className="font-bold text-sm sm:text-base mb-1">{game.name}</h4>
                         <p className="text-xs text-muted-foreground/80 line-clamp-2">
                           {game.description}
                         </p>
                       </div>
-                      <div className="flex flex-col items-end gap-2">
-                        <Badge variant="outline" className="text-xs capitalize rounded-full border-foreground/20">
+                      <div className="flex flex-col items-end gap-1 sm:gap-2 shrink-0">
+                        <Badge variant="outline" className="text-[10px] sm:text-xs capitalize rounded-full border-foreground/20">
                           {game.category}
                         </Badge>
-                        <span className="text-xs text-muted-foreground/60 font-medium">
+                        <span className="text-[10px] sm:text-xs text-muted-foreground/60 font-medium whitespace-nowrap">
                           {game.minPlayers}-{game.maxPlayers} players
                         </span>
                       </div>

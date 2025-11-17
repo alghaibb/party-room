@@ -50,29 +50,29 @@ export function RoomHeader({ room }: RoomHeaderProps) {
   return (
     <Card className="rounded-2xl bg-background/40 backdrop-blur-xl border border-foreground/10 shadow-lg">
       <CardHeader className="pb-4">
-        <div className="flex items-start justify-between">
-          <div className="flex items-center gap-4">
-            <div className="w-14 h-14 bg-[linear-gradient(135deg,var(--primary)/20,var(--accent)/20)] rounded-2xl flex items-center justify-center border border-foreground/10">
-              <IconHome className="w-7 h-7 text-primary" />
+        <div className="flex items-start justify-between gap-3">
+          <div className="flex items-center gap-3 sm:gap-4 flex-1 min-w-0">
+            <div className="w-10 h-10 sm:w-14 sm:h-14 bg-[linear-gradient(135deg,var(--primary)/20,var(--accent)/20)] rounded-xl sm:rounded-2xl flex items-center justify-center border border-foreground/10 shrink-0">
+              <IconHome className="w-5 h-5 sm:w-7 sm:h-7 text-primary" />
             </div>
-            <div>
-              <CardTitle className="text-2xl font-black">{room.name}</CardTitle>
+            <div className="flex-1 min-w-0">
+              <CardTitle className="text-lg sm:text-xl md:text-2xl font-black truncate">{room.name}</CardTitle>
               {room.description && (
-                <p className="text-sm text-muted-foreground/80 mt-2">
+                <p className="text-xs sm:text-sm text-muted-foreground/80 mt-1 sm:mt-2 line-clamp-2">
                   {room.description}
                 </p>
               )}
             </div>
           </div>
 
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1 sm:gap-2 shrink-0">
             <Button
               variant="outline"
               size="icon"
               onClick={() => setShareDialogOpen(true)}
-              className="h-8 w-8"
+              className="h-7 w-7 sm:h-8 sm:w-8"
             >
-              <IconShare className="h-4 w-4" />
+              <IconShare className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
             </Button>
             {room.isOwner ? (
               <RoomManagementDropdown
@@ -89,9 +89,9 @@ export function RoomHeader({ room }: RoomHeaderProps) {
         </div>
       </CardHeader>
 
-      <CardContent className="space-y-4">
+      <CardContent className="space-y-3 sm:space-y-4">
         {/* Room Info */}
-        <div className="flex items-center gap-4 text-sm">
+        <div className="flex items-center gap-3 sm:gap-4 text-xs sm:text-sm flex-wrap">
           <div className="flex items-center gap-1">
             <IconUsers className="w-4 h-4 text-muted-foreground" />
             <span>
@@ -115,16 +115,16 @@ export function RoomHeader({ room }: RoomHeaderProps) {
         </div>
 
         {/* Room Code */}
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2 sm:gap-3 flex-wrap">
           <Badge
             variant="outline"
-            className="text-sm font-mono cursor-pointer hover:bg-accent/50 rounded-full border-foreground/20 px-3 py-1"
+            className="text-xs sm:text-sm font-mono cursor-pointer hover:bg-accent/50 rounded-full border-foreground/20 px-2 sm:px-3 py-1"
             onClick={handleCopyRoomCode}
           >
             <IconCopy className="w-3 h-3 mr-1" />
             {room.code}
           </Badge>
-          <span className="text-xs text-muted-foreground/60">
+          <span className="text-xs text-muted-foreground/60 hidden sm:inline">
             Click to copy room code
           </span>
         </div>

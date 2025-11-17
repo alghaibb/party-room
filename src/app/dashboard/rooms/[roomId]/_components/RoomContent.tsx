@@ -30,8 +30,8 @@ export function RoomContent({ roomId }: RoomContentProps) {
     !session.user
   ) {
     return (
-      <div className="flex flex-1 flex-col lg:flex-row gap-6 h-full min-h-0">
-        <div className="lg:w-80 flex flex-col gap-4">
+      <div className="flex flex-1 flex-col md:flex-row gap-4 md:gap-6 h-full min-h-0">
+        <div className="md:w-80 lg:w-96 flex flex-col gap-4">
           <Card className="rounded-2xl bg-background/40 backdrop-blur-xl border border-foreground/10">
             <CardHeader className="space-y-3">
               <div className="h-7 w-40 bg-muted/50 animate-pulse rounded" />
@@ -58,7 +58,7 @@ export function RoomContent({ roomId }: RoomContentProps) {
           </Card>
         </div>
 
-        <div className="lg:w-80 flex flex-col gap-4">
+        <div className="md:w-80 lg:w-96 flex flex-col gap-4">
           <Card className="flex-1 flex flex-col rounded-2xl bg-background/40 backdrop-blur-xl border border-foreground/10">
             <CardContent className="flex-1 flex flex-col pt-6">
               <div className="flex-1 space-y-3">
@@ -117,7 +117,7 @@ export function RoomContent({ roomId }: RoomContentProps) {
 
   return (
     <>
-      <div className="lg:w-80 flex flex-col gap-4">
+      <div className="md:w-80 lg:w-96 flex flex-col gap-4">
         <RoomHeader room={room} />
 
         <div className="flex-1">

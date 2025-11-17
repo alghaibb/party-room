@@ -39,7 +39,7 @@ export function NotFound({ showSidebar }: NotFoundProps) {
         {/* Animated 404 Number */}
         <div className="relative inline-block">
           <div className="absolute inset-0 bg-primary/20 blur-3xl rounded-full animate-pulse -z-10" />
-          <h1 className="relative text-9xl md:text-[12rem] font-bold bg-linear-to-br from-primary via-primary/80 to-accent bg-clip-text text-transparent leading-none">
+          <h1 className="relative text-7xl sm:text-8xl md:text-9xl lg:text-[12rem] font-bold bg-linear-to-br from-primary via-primary/80 to-accent bg-clip-text text-transparent leading-none">
             404
           </h1>
         </div>
@@ -58,11 +58,11 @@ export function NotFound({ showSidebar }: NotFoundProps) {
         </div>
 
         {/* Content */}
-        <div className="space-y-4 pt-4">
-          <h2 className="text-3xl md:text-4xl font-bold text-foreground">
+        <div className="space-y-3 sm:space-y-4 pt-2 sm:pt-4">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-foreground">
             Page Not Found
           </h2>
-          <p className="text-lg text-muted-foreground max-w-md mx-auto leading-relaxed">
+          <p className="text-base sm:text-lg text-muted-foreground max-w-md mx-auto leading-relaxed px-2">
             Oops! The page you&apos;re looking for seems to have vanished into
             the party void. Don&apos;t worry, let&apos;s get you back on track!
           </p>
@@ -76,7 +76,7 @@ export function NotFound({ showSidebar }: NotFoundProps) {
                 asChild
                 variant="modern"
                 size="modern-md"
-                className="group shadow-lg hover:shadow-xl transition-all"
+                className="group shadow-lg hover:shadow-xl transition-all w-full md:w-auto"
               >
                 <Link
                   href="/dashboard"
@@ -91,7 +91,7 @@ export function NotFound({ showSidebar }: NotFoundProps) {
                 asChild
                 variant="outline"
                 size="modern-md"
-                className="group border-foreground/20 hover:bg-accent/50 transition-all"
+                className="group border-foreground/20 hover:bg-accent/50 transition-all w-full md:w-auto"
               >
                 <Link
                   href="/dashboard/rooms"

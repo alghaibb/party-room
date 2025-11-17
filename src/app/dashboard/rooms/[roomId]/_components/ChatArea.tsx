@@ -190,8 +190,8 @@ export function ChatArea({
           </div>
 
           {/* Message Input */}
-          <div className="flex items-end gap-2 pt-3 border-t border-foreground/5 bg-background/20 backdrop-blur-sm -mx-6 -mb-6 px-6 pb-4 rounded-b-2xl">
-            <div className="flex-1 relative">
+          <div className="flex items-end gap-2 pt-3 border-t border-foreground/5 bg-background/20 backdrop-blur-sm -mx-4 sm:-mx-6 -mb-4 sm:-mb-6 px-4 sm:px-6 pb-3 sm:pb-4 rounded-b-xl sm:rounded-b-2xl">
+            <div className="flex-1 relative min-w-0">
               <Input
                 placeholder={
                   isConnected ? "Type a message..." : "Connecting to chat..."
@@ -200,11 +200,11 @@ export function ChatArea({
                 onChange={(e) => setMessageInput(e.target.value)}
                 onKeyDown={handleKeyPress}
                 disabled={!isConnected}
-                className="flex-1 rounded-xl bg-background/60 border-foreground/10 focus:border-primary/50 focus:ring-2 focus:ring-primary/20 transition-all pr-12 py-6 text-sm placeholder:text-muted-foreground/60"
+                className="flex-1 rounded-lg sm:rounded-xl bg-background/60 border-foreground/10 focus:border-primary/50 focus:ring-2 focus:ring-primary/20 transition-all pr-10 sm:pr-12 py-4 sm:py-6 text-xs sm:text-sm placeholder:text-muted-foreground/60"
                 maxLength={500}
               />
               {messageInput.length > 0 && (
-                <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-muted-foreground/70 font-medium">
+                <span className="absolute right-2 sm:right-3 top-1/2 -translate-y-1/2 text-[10px] sm:text-xs text-muted-foreground/70 font-medium">
                   {messageInput.length}/500
                 </span>
               )}
@@ -214,9 +214,9 @@ export function ChatArea({
               size="modern-sm"
               onClick={handleSendMessage}
               disabled={!isConnected || !messageInput.trim()}
-              className="rounded-full shrink-0 disabled:opacity-50 disabled:cursor-not-allowed h-12 w-12 shadow-lg hover:shadow-xl transition-all"
+              className="rounded-full shrink-0 disabled:opacity-50 disabled:cursor-not-allowed h-10 w-10 sm:h-12 sm:w-12 shadow-lg hover:shadow-xl transition-all"
             >
-              <IconSend className="w-4 h-4" />
+              <IconSend className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
             </Button>
           </div>
         </CardContent>

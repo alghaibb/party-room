@@ -67,7 +67,7 @@ export default async function RoomPage({ params }: RoomPageProps) {
 
   return (
     <div className="flex flex-1 flex-col h-full">
-      <div className="flex flex-1 flex-col lg:flex-row gap-6 p-4 md:p-6 h-full min-h-0">
+      <div className="flex flex-1 flex-col md:flex-row gap-4 md:gap-6 p-4 md:p-6 h-full min-h-0">
         <RoomContent roomId={roomId} />
       </div>
     </div>
