@@ -53,7 +53,7 @@ export function HeroContent({ isAuthenticated }: HeroContentProps) {
           <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
             {isAuthenticated ? (
               <Button asChild variant="modern" size="modern-md">
-                <Link href="/dashboard" prefetch={true}>
+                <Link href="/dashboard">
                   Go to Dashboard
                   <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                 </Link>
@@ -61,13 +61,13 @@ export function HeroContent({ isAuthenticated }: HeroContentProps) {
             ) : (
               <>
                 <Button asChild variant="modern" size="modern-md">
-                  <Link href="/sign-up" prefetch={true}>
+                  <Link href="/sign-up">
                     Start Free
                     <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                   </Link>
                 </Button>
                 <Button asChild variant="modern-outline" size="modern-md">
-                  <Link href="/sign-in" prefetch={true}>Sign In</Link>
+                  <Link href="/sign-in">Sign In</Link>
                 </Button>
               </>
             )}

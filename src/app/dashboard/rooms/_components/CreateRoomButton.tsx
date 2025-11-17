@@ -18,7 +18,7 @@ export function CreateRoomButton({ isVerified = true }: CreateRoomButtonProps) {
       size="modern-sm"
     >
       {isVerified ? (
-        <Link href="/dashboard/rooms/create" prefetch={true}>
+        <Link href="/dashboard/rooms/create">
           <IconPlus className="w-4 h-4" />
           Create Room
         </Link>

@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import { supabase } from "@/lib/supabase/client";
 import type { RealtimeChannel } from "@supabase/supabase-js";
 import { useRouter } from "next/navigation";
@@ -202,60 +202,54 @@ export function useRealtimeChat({
     };
   }, [roomId, userId, userName, displayUsername, onMessage, router]);
 
-  const sendMessage = useCallback(
-    async (
-      content: string,
-      saveToDb?: (
-        roomId: string,
-        content: string
-      ) => Promise<{ success: boolean; error?: string }>
-    ) => {
-      const channel = channelRef.current;
-      if (!channel || !isConnected || !content.trim()) return;
+  const sendMessage = async (
+    content: string,
+    saveToDb?: (
+      roomId: string,
+      content: string
+    ) => Promise<{ success: boolean; error?: string }>
+  ) => {
+    const channel = channelRef.current;
+    if (!channel || !isConnected || !content.trim()) return;
 
-      const message: ChatMessage = {
-        id: `${userId}-${Date.now()}`,
-        content: content.trim(),
-        user: {
-          id: userId,
-          name: displayUsername || userName,
-        },
-        createdAt: new Date().toISOString(),
-      };
+    const message: ChatMessage = {
+      id: `${userId}-${Date.now()}`,
+      content: content.trim(),
+      user: {
+        id: userId,
+        name: displayUsername || userName,
+      },
+      createdAt: new Date().toISOString(),
+    };
 
-      // Optimistic update: Add message to UI immediately
-      setMessages((prev) => addMessage(prev, message, onMessage));
+    // Optimistic update: Add message to UI immediately
+    setMessages((prev) => addMessage(prev, message, onMessage));
 
-      // Broadcast to other users immediately (non-blocking)
-      channel.send({
-        type: "broadcast",
-        event: "message",
-        payload: message,
+    // Broadcast to other users immediately (non-blocking)
+    channel.send({
+      type: "broadcast",
+      event: "message",
+      payload: message,
+    });
+
+    // Save to database in the background (don't await)
+    if (saveToDb) {
+      saveToDb(roomId, content.trim()).catch((error) => {
+        console.error("Failed to save message:", error);
       });
+    }
+  };
 
-      // Save to database in the background (don't await)
-      if (saveToDb) {
-        saveToDb(roomId, content.trim()).catch((error) => {
-          console.error("Failed to save message:", error);
-        });
-      }
-    },
-    [isConnected, userId, userName, displayUsername, roomId, onMessage]
-  );
+  const broadcastRoomDeleted = (ownerName: string) => {
+    const channel = channelRef.current;
+    if (!channel) return;
 
-  const broadcastRoomDeleted = useCallback(
-    (ownerName: string) => {
-      const channel = channelRef.current;
-      if (!channel) return;
-
-      channel.send({
-        type: "broadcast",
-        event: "room-deleted",
-        payload: { roomId, ownerName },
-      });
-    },
-    [roomId]
-  );
+    channel.send({
+      type: "broadcast",
+      event: "room-deleted",
+      payload: { roomId, ownerName },
+    });
+  };
 
   return {
     messages,

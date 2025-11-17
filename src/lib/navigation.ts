@@ -5,7 +5,6 @@
  */
 
 import { useRouter } from "next/navigation";
-import { useCallback } from "react";
 
 /**
  * Hook for programmatic navigation
@@ -14,35 +13,29 @@ import { useCallback } from "react";
 export function useAppNavigation() {
   const router = useRouter();
 
-  const navigate = useCallback(
-    (path: string, options?: { replace?: boolean }) => {
-      if (options?.replace) {
-        router.replace(path);
-      } else {
-        router.push(path);
-      }
-    },
-    [router]
-  );
+  const navigate = (path: string, options?: { replace?: boolean }) => {
+    if (options?.replace) {
+      router.replace(path);
+    } else {
+      router.push(path);
+    }
+  };
 
-  const navigateBack = useCallback(() => {
+  const navigateBack = () => {
     router.back();
-  }, [router]);
+  };
 
-  const navigateToRoom = useCallback(
-    (roomId: string) => {
-      router.push(`/dashboard/rooms/${roomId}`);
-    },
-    [router]
-  );
+  const navigateToRoom = (roomId: string) => {
+    router.push(`/dashboard/rooms/${roomId}`);
+  };
 
-  const navigateToRooms = useCallback(() => {
+  const navigateToRooms = () => {
     router.push("/dashboard/rooms");
-  }, [router]);
+  };
 
-  const navigateToDashboard = useCallback(() => {
+  const navigateToDashboard = () => {
     router.push("/dashboard");
-  }, [router]);
+  };
 
   return {
     navigate,

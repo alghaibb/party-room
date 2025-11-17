@@ -80,7 +80,6 @@ export function NotFound({ showSidebar }: NotFoundProps) {
               >
                 <Link
                   href="/dashboard"
-                  prefetch={true}
                   className="flex items-center gap-2"
                 >
                   <IconHome className="w-5 h-5" />
@@ -95,7 +94,6 @@ export function NotFound({ showSidebar }: NotFoundProps) {
               >
                 <Link
                   href="/dashboard/rooms"
-                  prefetch={true}
                   className="flex items-center gap-2"
                 >
                   <IconRocket className="w-5 h-5" />
@@ -113,7 +111,6 @@ export function NotFound({ showSidebar }: NotFoundProps) {
               >
                 <Link
                   href="/"
-                  prefetch={true}
                   className="flex items-center gap-2"
                 >
                   <IconHome className="w-5 h-5" />
@@ -128,7 +125,6 @@ export function NotFound({ showSidebar }: NotFoundProps) {
               >
                 <Link
                   href="/sign-in"
-                  prefetch={true}
                   className="flex items-center gap-2"
                 >
                   <IconRocket className="w-5 h-5" />

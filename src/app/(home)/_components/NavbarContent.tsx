@@ -73,19 +73,19 @@ export function NavbarContent({ isAuthenticated }: NavbarContentProps) {
                 : ""
             }
           >
-            <Link href="/dashboard" prefetch={true}>
+            <Link href="/dashboard">
               Dashboard
             </Link>
           </Button>
         ) : (
           <>
             <Button asChild variant="ghost" size="modern-sm">
-              <Link href="/sign-in" prefetch={true}>
+              <Link href="/sign-in">
                 Sign In
               </Link>
             </Button>
             <Button asChild variant="modern" size="modern-sm">
-              <Link href="/sign-up" prefetch={true}>
+              <Link href="/sign-up">
                 Get Started
               </Link>
             </Button>

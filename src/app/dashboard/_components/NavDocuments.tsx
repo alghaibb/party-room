@@ -70,7 +70,6 @@ export function NavDocuments({
                 >
                   <Link
                     href={item.url}
-                    prefetch={true}
                     onClick={handleLinkClick}
                     className="gap-3"
                   >

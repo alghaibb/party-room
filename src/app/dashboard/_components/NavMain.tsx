@@ -51,7 +51,6 @@ export function NavMain({
                 >
                   <Link
                     href={item.url}
-                    prefetch={true}
                     onClick={handleLinkClick}
                     className="gap-3"
                   >
