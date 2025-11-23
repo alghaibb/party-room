@@ -1,4 +1,4 @@
-import { getRoomDetails } from "@/app/dashboard/rooms/[roomId]/data";
+import { roomService } from "@/services/room";
 import { apiHandlerWithParams } from "@/lib/api-handler";
 
 export async function GET(
@@ -7,7 +7,7 @@ export async function GET(
 ) {
   return apiHandlerWithParams(
     params,
-    ({ roomId }) => getRoomDetails(roomId),
+    ({ roomId }) => roomService.getRoomDetails(roomId),
     "Failed to fetch room details"
   );
 }

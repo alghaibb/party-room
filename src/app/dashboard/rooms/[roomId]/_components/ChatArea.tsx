@@ -19,7 +19,6 @@ import { useChatScroll } from "@/hooks/use-chat-scroll";
 import { ChatMessageItem } from "./ChatMessage";
 import type { ChatMessage } from "@/hooks/use-realtime-chat";
 import { saveMessage } from "../actions";
-import { RoomEventsProvider } from "@/contexts/room-events-context";
 
 interface ChatAreaProps {
   roomId: string;
@@ -29,6 +28,7 @@ interface ChatAreaProps {
   currentUserDisplayUsername: string;
   initialMessages?: ChatMessage[];
   onMessageSent?: (messages: ChatMessage[]) => void;
+  onBroadcastRoomDeletedReady?: (fn: (ownerName: string) => void) => void;
 }
 
 export function ChatArea({
@@ -37,6 +37,7 @@ export function ChatArea({
   currentUserName,
   currentUserDisplayUsername,
   initialMessages = [],
+  onBroadcastRoomDeletedReady,
 }: ChatAreaProps) {
   const [messageInput, setMessageInput] = useState("");
   const [isMinimized, setIsMinimized] = useState(false);
@@ -51,6 +52,12 @@ export function ChatArea({
     });
 
   const { containerRef, scrollToBottom } = useChatScroll();
+
+  useEffect(() => {
+    if (onBroadcastRoomDeletedReady && broadcastRoomDeleted) {
+      onBroadcastRoomDeletedReady(broadcastRoomDeleted);
+    }
+  }, [onBroadcastRoomDeletedReady, broadcastRoomDeleted]);
 
   // Auto-scroll when new messages arrive
   useEffect(() => {
@@ -71,10 +78,8 @@ export function ChatArea({
     }
   };
 
-  // Wrap component with RoomEventsProvider to expose broadcastRoomDeleted via context
   return (
-    <RoomEventsProvider broadcastRoomDeleted={broadcastRoomDeleted}>
-      <Card
+    <Card
       className={`rounded-2xl bg-background/40 backdrop-blur-xl border border-foreground/10 shadow-lg ${
         isMinimized ? "flex flex-col chat-minimized" : "h-full flex flex-col"
       }`}
@@ -87,13 +92,14 @@ export function ChatArea({
               <IconSparkles className="w-3 h-3 text-primary absolute -top-1 -right-1 animate-pulse" />
             </div>
             {isMinimized && messages.length > 0 && (
-              <Badge variant="secondary" className="h-5 min-w-5 px-1.5 text-[10px] rounded-full bg-primary/20 text-primary border border-primary/30 flex items-center justify-center">
+              <Badge
+                variant="secondary"
+                className="h-5 min-w-5 px-1.5 text-[10px] rounded-full bg-primary/20 text-primary border border-primary/30 flex items-center justify-center"
+              >
                 {messages.length}
               </Badge>
             )}
-            <span className="sr-only">
-              Room Chat
-            </span>
+            <span className="sr-only">Room Chat</span>
           </div>
           <div className="flex items-center gap-2">
             <Badge
@@ -140,8 +146,8 @@ export function ChatArea({
             ref={containerRef}
             className="flex-1 space-y-1 overflow-y-auto min-h-0 pr-2 scrollbar-thin scrollbar-thumb-primary/20 scrollbar-track-transparent hover:scrollbar-thumb-primary/30"
             style={{
-              scrollbarWidth: 'thin',
-              scrollbarColor: 'hsl(var(--primary) / 0.2) transparent',
+              scrollbarWidth: "thin",
+              scrollbarColor: "hsl(var(--primary) / 0.2) transparent",
             }}
           >
             {messages.length === 0 ? (
@@ -169,8 +175,11 @@ export function ChatArea({
 
                 // Check if we need to show a date separator
                 const messageDate = new Date(message.createdAt);
-                const prevDate = previousMessage ? new Date(previousMessage.createdAt) : null;
-                const showDateSeparator = !prevDate || 
+                const prevDate = previousMessage
+                  ? new Date(previousMessage.createdAt)
+                  : null;
+                const showDateSeparator =
+                  !prevDate ||
                   messageDate.getDate() !== prevDate.getDate() ||
                   messageDate.getMonth() !== prevDate.getMonth() ||
                   messageDate.getFullYear() !== prevDate.getFullYear();
@@ -221,7 +230,6 @@ export function ChatArea({
           </div>
         </CardContent>
       )}
-      </Card>
-    </RoomEventsProvider>
+    </Card>
   );
 }

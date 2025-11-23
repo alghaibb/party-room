@@ -1,20 +1,5 @@
 // Types for React Query hooks and API responses
 
-export interface UserStats {
-  roomsJoined: number;
-  gamesPlayed: number;
-  friendsOnline: number;
-  hoursPlayed: number;
-  winRate: number;
-  weeklyGames: number;
-}
-
-export interface RoomStats {
-  totalActiveRooms: number;
-  totalActivePlayers: number;
-  gamesInProgress: number;
-}
-
 export interface ActiveRoom {
   id: string;
   name: string;
@@ -130,14 +115,5 @@ export interface RoomMessage {
     username: string | null;
     image: string | null;
   };
-}
-
-export interface Game {
-  id: string;
-  name: string;
-  description: string;
-  minPlayers: number;
-  maxPlayers: number;
-  category: string;
 }
 

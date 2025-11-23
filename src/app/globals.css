@@ -225,6 +225,55 @@
   }
 }
 
+@keyframes dot1 {
+  0%,
+  20% {
+    opacity: 0;
+  }
+  40% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes dot2 {
+  0%,
+  40% {
+    opacity: 0;
+  }
+  60% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes dot3 {
+  0%,
+  60% {
+    opacity: 0;
+  }
+  80% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes fade {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+
 /* Override sidebar active background to use primary color */
 [data-sidebar="menu-button"][data-active="true"] {
   background-color: hsl(var(--primary)) !important;
@@ -271,4 +320,3 @@
     }
   }
 }
-

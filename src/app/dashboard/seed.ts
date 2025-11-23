@@ -6,10 +6,24 @@ import prisma from "@/lib/prisma";
 export const defaultGames = [
   {
     name: "Trivia Challenge",
-    description: "Test your knowledge across various topics",
+    description: "Test your knowledge with fun trivia questions!",
     minPlayers: 2,
     maxPlayers: 8,
     category: "trivia"
+  },
+  {
+    name: "Word Guess",
+    description: "Guess the hidden word letter by letter!",
+    minPlayers: 2,
+    maxPlayers: 6,
+    category: "word"
+  },
+  {
+    name: "Number Guess",
+    description: "Guess the secret number between 1 and 100!",
+    minPlayers: 2,
+    maxPlayers: 8,
+    category: "party"
   },
   {
     name: "Drawing Guessing Game",

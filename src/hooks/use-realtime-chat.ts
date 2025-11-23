@@ -112,6 +112,13 @@ export function useRealtimeChat({
   // Set up Supabase Realtime channel
   useEffect(() => {
     let hasJoined = false;
+    let subscriptionTimeout: NodeJS.Timeout;
+
+    // Ensure we have valid roomId and userId
+    if (!roomId || !userId) {
+      console.warn("[Chat] Missing roomId or userId, cannot subscribe to chat", { roomId, userId });
+      return;
+    }
 
     const roomChannel = supabase.channel(`room:${roomId}`, {
       config: {
@@ -164,21 +171,68 @@ export function useRealtimeChat({
             router.push("/dashboard/rooms");
           }
         }, 2000);
-      })
-      .subscribe((status) => {
-        if (status === "SUBSCRIBED") {
-          setIsConnected(true);
-          hasJoined = true;
-          // Broadcast user joined event
-          roomChannel.send({
-            type: "broadcast",
-            event: "user-joined",
-            payload: { userId, userName, displayUsername },
-          });
-        } else if (status === "CLOSED") {
-          setIsConnected(false);
-        }
       });
+    
+    // Subscribe and handle status changes
+    const handleSubscriptionStatus = (status: string) => {
+      if (status === "SUBSCRIBED") {
+        setIsConnected(true);
+        hasJoined = true;
+        clearTimeout(subscriptionTimeout);
+        // Broadcast user joined event
+        roomChannel.send({
+          type: "broadcast",
+          event: "user-joined",
+          payload: { userId, userName, displayUsername },
+        }).catch((error) => {
+          console.error("[Chat] Failed to send user-joined broadcast:", error);
+        });
+      } else if (status === "CLOSED") {
+        setIsConnected(false);
+      } else if (status === "CHANNEL_ERROR") {
+        console.error("[Chat] Channel error occurred");
+        setIsConnected(false);
+      } else if (status === "TIMED_OUT") {
+        console.error("[Chat] Channel subscription timed out");
+        setIsConnected(false);
+      }
+    };
+    
+    roomChannel.subscribe(handleSubscriptionStatus);
+
+    // Check if channel is already joined (might happen if subscription completes synchronously)
+    const checkChannelState = () => {
+      if (roomChannel.state === "joined" && !hasJoined) {
+        setIsConnected(true);
+        hasJoined = true;
+        clearTimeout(subscriptionTimeout);
+        // Broadcast user joined event
+        roomChannel.send({
+          type: "broadcast",
+          event: "user-joined",
+          payload: { userId, userName, displayUsername },
+        }).catch((error) => {
+          console.error("[Chat] Failed to send user-joined broadcast:", error);
+        });
+      }
+    };
+
+    // Check immediately and after a short delay
+    checkChannelState();
+    setTimeout(checkChannelState, 100);
+
+    // Set a timeout to detect if subscription never completes
+    subscriptionTimeout = setTimeout(() => {
+      if (!hasJoined) {
+        console.warn("[Chat] Channel subscription taking longer than expected. Status:", roomChannel.state);
+        checkChannelState();
+        // If still not connected, try to resubscribe
+        if (!hasJoined && roomChannel.state !== "joined") {
+          roomChannel.unsubscribe();
+          roomChannel.subscribe(handleSubscriptionStatus);
+        }
+      }
+    }, 5000); // 5 second timeout
 
     // Only send leave event on page unload, not component unmount
     const handleBeforeUnload = () => {
@@ -187,6 +241,8 @@ export function useRealtimeChat({
           type: "broadcast",
           event: "user-left",
           payload: { userId, userName, displayUsername },
+        }).catch((error) => {
+          console.error("Failed to send user-left broadcast:", error);
         });
       }
     };
@@ -195,6 +251,7 @@ export function useRealtimeChat({
 
     // Cleanup on unmount
     return () => {
+      clearTimeout(subscriptionTimeout);
       window.removeEventListener("beforeunload", handleBeforeUnload);
       if (roomChannel) {
         roomChannel.unsubscribe();

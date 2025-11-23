@@ -1,6 +1,6 @@
 "use client";
 
-import type { RoomMessage } from "@/types/queries";
+import type { RoomMessage } from "@/types";
 import { createParamQueryHook, createParamFetchFn } from "./query-factory";
 
 const fetchRoomMessages = createParamFetchFn<RoomMessage[]>(

@@ -49,6 +49,12 @@ export function useRoomPresence({
   const [isConnected, setIsConnected] = useState(false);
 
   useEffect(() => {
+    if (!roomId || !userId) {
+      console.warn("[useRoomPresence] Missing roomId or userId", { roomId, userId });
+      return;
+    }
+
+    console.log("[useRoomPresence] Setting up presence", { roomId, userId, userName, displayUsername });
     const presenceChannel = supabase.channel(`presence:${roomId}`, {
       config: {
         presence: {
@@ -60,19 +66,24 @@ export function useRoomPresence({
     presenceChannel
       .on("presence", { event: "sync" }, () => {
         const state = presenceChannel.presenceState<RoomUser>();
-        setOnlineUsers(extractUsersFromState(state));
+        const users = extractUsersFromState(state);
+        console.log("[useRoomPresence] Presence sync", { usersCount: users.length, users: users.map(u => ({ userId: u.userId, userName: u.userName })) });
+        setOnlineUsers(users);
       })
       .on("presence", { event: "join" }, ({ newPresences }) => {
+        console.log("[useRoomPresence] User joined", { newPresences });
         setOnlineUsers((prev) => {
           const newUsers = newPresences
             .map(toRoomUser)
             .filter((user): user is RoomUser => {
               return user !== null && !prev.some((u) => u.userId === user.userId);
             });
+          console.log("[useRoomPresence] Added new users", { newUsers: newUsers.map(u => ({ userId: u.userId, userName: u.userName })), totalCount: prev.length + newUsers.length });
           return [...prev, ...newUsers];
         });
       })
       .on("presence", { event: "leave" }, ({ leftPresences }) => {
+        console.log("[useRoomPresence] User left", { leftPresences });
         setOnlineUsers((prev) => {
           const leftUserIds = new Set(
             leftPresences
@@ -80,17 +91,32 @@ export function useRoomPresence({
               .filter((user): user is RoomUser => user !== null)
               .map((user) => user.userId)
           );
-          return prev.filter((user) => !leftUserIds.has(user.userId));
+          const filtered = prev.filter((user) => !leftUserIds.has(user.userId));
+          console.log("[useRoomPresence] Removed users", { leftUserIds: Array.from(leftUserIds), remainingCount: filtered.length });
+          return filtered;
         });
       })
       .subscribe(async (status) => {
+        console.log("[useRoomPresence] Subscription status", { status, roomId, userId });
         if (status === "SUBSCRIBED") {
           setIsConnected(true);
+          console.log("[useRoomPresence] Subscribed, tracking presence", { userId, userName, displayUsername });
           await presenceChannel.track({
             userId,
             userName,
             displayUsername,
           });
+          // Immediately sync presence state after tracking
+          const state = presenceChannel.presenceState<RoomUser>();
+          const users = extractUsersFromState(state);
+          console.log("[useRoomPresence] Initial presence state after track", { usersCount: users.length, users: users.map(u => ({ userId: u.userId, userName: u.userName })) });
+          setOnlineUsers(users);
+        } else if (status === "CLOSED") {
+          // CLOSED is normal during cleanup, not an error
+          setIsConnected(false);
+        } else if (status === "CHANNEL_ERROR") {
+          console.error("[useRoomPresence] Channel error", { status });
+          setIsConnected(false);
         }
       });
 

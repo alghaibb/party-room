@@ -3,6 +3,7 @@ import prisma from "@/lib/prisma";
 import { cache } from "react";
 import { redirect } from "next/navigation";
 import { isRedirectError } from "next/dist/client/components/redirect-error";
+import { GAME_SESSION_STATUS } from "@/constants/game";
 
 export const getRoomDetails = cache(async (roomId: string) => {
   try {
@@ -46,7 +47,7 @@ export const getRoomDetails = cache(async (roomId: string) => {
         gameSessions: {
           where: {
             status: {
-              in: ["waiting", "playing"],
+              in: [GAME_SESSION_STATUS.WAITING, GAME_SESSION_STATUS.PLAYING],
             },
           },
           include: {

@@ -1,6 +1,6 @@
 "use client";
 
-import type { ActiveRoom } from "@/types/queries";
+import type { ActiveRoom } from "@/types";
 import { createQueryHook, createFetchFn } from "./query-factory";
 
 const fetchActiveRooms = createFetchFn<ActiveRoom[]>(

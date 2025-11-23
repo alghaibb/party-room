@@ -1,5 +1,5 @@
-import { getRoomMessages } from "@/app/dashboard/rooms/[roomId]/data";
 import { apiHandlerWithParams } from "@/lib/api-handler";
+import { roomMessagesService } from "@/services/room";
 
 export async function GET(
   _request: Request,
@@ -7,7 +7,7 @@ export async function GET(
 ) {
   return apiHandlerWithParams(
     params,
-    ({ roomId }) => getRoomMessages(roomId),
+    ({ roomId }) => roomMessagesService.getRoomMessages(roomId),
     "Failed to fetch room messages"
   );
 }

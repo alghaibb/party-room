@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useRef } from "react";
 import { RoomHeader } from "./RoomHeader";
 import { PlayerList } from "./PlayerList";
 import { GameArea } from "./GameArea";
@@ -9,6 +10,14 @@ import { useRoomMessages } from "@/hooks/queries/use-room-messages";
 import { useAvailableGames } from "@/hooks/queries/use-available-games";
 import { useSession } from "@/hooks/queries/use-session";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { updateMemberOnlineStatus } from "../actions";
+import {
+  transformMessages,
+  transformMembersForGameArea,
+  transformMembersForPlayerList,
+  getDisplayUsername,
+} from "@/lib/room-data-transformers";
+import { RoomEventsProvider } from "@/contexts/room-events-context";
 
 interface RoomContentProps {
   roomId: string;
@@ -19,6 +28,26 @@ export function RoomContent({ roomId }: RoomContentProps) {
   const { data: availableGames } = useAvailableGames();
   const { data: dbMessages } = useRoomMessages(roomId);
   const { data: session } = useSession();
+  const broadcastRoomDeletedRef = useRef<((ownerName: string) => void) | null>(
+    null
+  );
+
+  // Update online status when entering the room
+  useEffect(() => {
+    if (room && session?.user) {
+      // Mark user as online when entering room
+      updateMemberOnlineStatus(roomId, true).catch((error) => {
+        console.error("Failed to update online status:", error);
+      });
+
+      // Mark user as offline when leaving room
+      return () => {
+        updateMemberOnlineStatus(roomId, false).catch((error) => {
+          console.error("Failed to update online status:", error);
+        });
+      };
+    }
+  }, [roomId, room, session?.user]);
 
   // Show loader only when there's no cached data (first load)
   // Note: dbMessages can be undefined initially, but we don't block rendering for it
@@ -80,15 +109,16 @@ export function RoomContent({ roomId }: RoomContentProps) {
     );
   }
 
-  // Ensure all data is arrays before processing
-  const messagesArray = Array.isArray(dbMessages) ? dbMessages : [];
-  const members = room && typeof room === 'object' && 'members' in room 
-    ? (Array.isArray(room.members) ? room.members : [])
-    : [];
+  const members =
+    room && typeof room === "object" && "members" in room
+      ? Array.isArray(room.members)
+        ? room.members
+        : []
+      : [];
   const gamesArray = Array.isArray(availableGames) ? availableGames : [];
 
   // Defensive check: ensure room exists and has required properties
-  if (!room || typeof room !== 'object' || !room.id) {
+  if (!room || typeof room !== "object" || !room.id) {
     return (
       <div className="flex flex-1 items-center justify-center">
         <div className="text-center">
@@ -98,62 +128,47 @@ export function RoomContent({ roomId }: RoomContentProps) {
     );
   }
 
-  // Transform messages to the format expected by ChatArea
-  // Only process if we have messages (dbMessages might be undefined initially)
-  const initialMessages = dbMessages && Array.isArray(dbMessages) && dbMessages.length > 0
-    ? dbMessages.map((msg) => ({
-        id: msg.id,
-        content: msg.content,
-        user: {
-          id: msg.user.id,
-          name: msg.user.name,
-        },
-        createdAt:
-          typeof msg.createdAt === "string"
-            ? msg.createdAt
-            : new Date(msg.createdAt).toISOString(),
-      }))
-    : [];
+  const initialMessages = transformMessages(dbMessages);
+  const transformedMembers = transformMembersForPlayerList(members);
+  const gameAreaMembers = transformMembersForGameArea(members);
 
   return (
-    <>
+    <RoomEventsProvider
+      broadcastRoomDeleted={(ownerName) => {
+        broadcastRoomDeletedRef.current?.(ownerName);
+      }}
+    >
       <div className="md:w-80 lg:w-96 flex flex-col gap-4">
         <RoomHeader room={room} />
 
         <div className="flex-1">
           <PlayerList
             roomId={room.id}
-            members={members.map((m) => ({
-              ...m,
-              user: {
-                ...m.user,
-                displayUsername:
-                  (m.user as typeof m.user & { displayUsername: string | null })
-                    .displayUsername || m.user.name,
-              },
-            }))}
+            members={transformedMembers}
             owner={{
               ...room.owner,
-              displayUsername:
-                (
-                  room.owner as typeof room.owner & {
-                    displayUsername: string | null;
-                  }
-                ).displayUsername || room.owner.name,
+              displayUsername: getDisplayUsername(room.owner),
             }}
             maxPlayers={room.maxPlayers}
             currentUserId={session.user.id}
             currentUserName={session.user.name}
-            currentUserDisplayUsername={
-              session.user.displayUsername || session.user.name
-            }
+            currentUserDisplayUsername={getDisplayUsername(session.user)}
           />
         </div>
       </div>
 
       <div className="flex-1 flex flex-col gap-4 min-h-0 has-[.chat-minimized]:gap-0">
         <div className="flex-1 min-h-0 has-[~_.chat-minimized]:flex-none has-[~_.chat-minimized]:h-full">
-          <GameArea room={room} availableGames={gamesArray} />
+          <GameArea
+            room={{
+              ...room,
+              currentUserId: session.user.id,
+              currentUserName: session.user.name,
+              currentUserDisplayUsername: getDisplayUsername(session.user),
+              members: gameAreaMembers,
+            }}
+            availableGames={gamesArray}
+          />
         </div>
         <div className="h-64 sm:h-80 md:h-96 has-[.chat-minimized]:h-auto">
           <ChatArea
@@ -161,13 +176,14 @@ export function RoomContent({ roomId }: RoomContentProps) {
             roomName={room.name}
             currentUserId={session.user.id}
             currentUserName={session.user.name}
-            currentUserDisplayUsername={
-              session.user.displayUsername || session.user.name
-            }
+            currentUserDisplayUsername={getDisplayUsername(session.user)}
             initialMessages={initialMessages}
+            onBroadcastRoomDeletedReady={(fn) => {
+              broadcastRoomDeletedRef.current = fn;
+            }}
           />
         </div>
       </div>
-    </>
+    </RoomEventsProvider>
   );
 }

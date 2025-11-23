@@ -10,12 +10,9 @@ export { useInvalidateRooms } from "./use-invalidate-rooms";
 
 // Export types for reuse
 export type {
-  UserStats,
-  RoomStats,
   ActiveRoom,
   UserRoom,
   RoomDetails,
   RoomMessage,
-  Game,
-} from "@/types/queries";
+} from "@/types";
 

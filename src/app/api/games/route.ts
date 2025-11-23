@@ -1,9 +1,9 @@
-import { getAvailableGames } from "@/app/dashboard/rooms/[roomId]/data";
+import { gameService } from "@/services/game";
 import { apiHandler } from "@/lib/api-handler";
 
 export async function GET() {
   return apiHandler(
-    () => getAvailableGames(),
+    () => gameService.getAvailableGames(),
     "Failed to fetch available games"
   );
 }

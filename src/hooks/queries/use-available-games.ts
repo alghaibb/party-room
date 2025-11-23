@@ -1,6 +1,6 @@
 "use client";
 
-import type { Game } from "@/types/queries";
+import type { Game } from "@/types";
 import { createQueryHook, createFetchFn } from "./query-factory";
 
 const fetchAvailableGames = createFetchFn<Game[]>(

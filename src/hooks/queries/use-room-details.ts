@@ -1,6 +1,6 @@
 "use client";
 
-import type { RoomDetails } from "@/types/queries";
+import type { RoomDetails } from "@/types";
 import { createParamQueryHook, createParamFetchFn } from "./query-factory";
 
 const fetchRoomDetails = createParamFetchFn<RoomDetails>(

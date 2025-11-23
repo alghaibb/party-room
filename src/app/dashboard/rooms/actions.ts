@@ -75,7 +75,18 @@ export async function joinRoom(roomCode: RoomCode) {
     });
 
     if (existingMembership) {
-      // User already in room
+      // User already in room - update isOnline status
+      await prisma.roomMember.update({
+        where: {
+          userId_roomId: {
+            userId: session.user.id,
+            roomId: room.id,
+          },
+        },
+        data: {
+          isOnline: true,
+        },
+      });
       revalidatePath("/dashboard/rooms");
       return {
         success: true,

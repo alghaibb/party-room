@@ -1,6 +1,6 @@
 "use client";
 
-import type { UserStats } from "@/types/queries";
+import type { UserStats } from "@/types";
 import { createQueryHook, createFetchFn } from "./query-factory";
 
 const fetchUserStats = createFetchFn<UserStats>(

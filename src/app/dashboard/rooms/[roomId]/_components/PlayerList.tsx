@@ -42,7 +42,7 @@ export function PlayerList({
   currentUserName,
   currentUserDisplayUsername,
 }: PlayerListProps) {
-  const { onlineUsers } = useRoomPresence({
+  const { onlineUsers, isConnected } = useRoomPresence({
     roomId,
     userId: currentUserId,
     userName: currentUserName,
@@ -50,10 +50,19 @@ export function PlayerList({
   });
 
   // Update members' online status based on presence
-  const updatedMembers = members.map((member) => ({
-    ...member,
-    isOnline: onlineUsers.some((u) => u.userId === member.userId),
-  }));
+  // If presence is connected, use presence data; otherwise fall back to database isOnline
+  const updatedMembers = members.map((member) => {
+    if (isConnected && onlineUsers.length > 0) {
+      // Use Supabase presence if connected and we have presence data
+      return {
+        ...member,
+        isOnline: onlineUsers.some((u) => u.userId === member.userId),
+      };
+    } else {
+      // Fall back to database isOnline status
+      return member;
+    }
+  });
 
   const onlineMembers = updatedMembers.filter((member) => member.isOnline);
   const offlineMembers = updatedMembers.filter((member) => !member.isOnline);
