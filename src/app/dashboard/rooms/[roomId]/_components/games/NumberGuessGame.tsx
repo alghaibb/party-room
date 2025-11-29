@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
-import { IconClock, IconTrophy, IconUsers, IconX, IconArrowUp, IconArrowDown } from "@tabler/icons-react";
+import { IconClock, IconTrophy, IconUsers, IconX } from "@tabler/icons-react";
 import { toast } from "sonner";
 import { supabase } from "@/lib/supabase/client";
 import type { RealtimeChannel } from "@supabase/supabase-js";
@@ -39,7 +39,6 @@ export function NumberGuessGame({
   members,
   currentUserId,
   gameSessionId,
-  roomId,
   gameStatus,
   onGameEnd,
   isOwner = false,
@@ -182,7 +181,6 @@ export function NumberGuessGame({
 
   const endGame = useCallback(() => {
     const score = isGuessed ? Math.max(0, 100 - attempts * 10) : 0;
-    const won = isGuessed;
 
     setScores((currentScores) => {
       const newScores = {
@@ -488,6 +486,7 @@ export function NumberGuessGame({
     </Card>
   );
 }
+
 
 
 

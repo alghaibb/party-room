@@ -1,13 +1,13 @@
 "use server";
 
+import {
+  GAME_ERRORS,
+  GAME_SESSION_STATUS,
+  GAME_VALIDATION,
+} from "@/constants/game";
 import { getSession } from "@/lib/get-session";
 import prisma from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
-import {
-  GAME_SESSION_STATUS,
-  GAME_ERRORS,
-  GAME_VALIDATION,
-} from "@/constants/game";
 
 export async function updateMemberOnlineStatus(
   roomId: string,
@@ -33,7 +33,7 @@ export async function updateMemberOnlineStatus(
       return { success: false, error: "Not a member of this room" };
     }
 
-    const updated = await prisma.roomMember.update({
+    await prisma.roomMember.update({
       where: {
         userId_roomId: {
           userId: session.user.id,
@@ -223,8 +223,9 @@ export async function startGame(
     });
 
     // Count online members - always count owner as online (they're calling this function)
-    const ownerInMembers = members.some(m => m.userId === room.ownerId);
-    let onlineMemberCount = members.filter(m => m.isOnline || m.userId === room.ownerId).length;
+    type Member = { userId: string; isOnline: boolean };
+    const ownerInMembers = members.some((m: Member) => m.userId === room.ownerId);
+    let onlineMemberCount = members.filter((m: Member) => m.isOnline || m.userId === room.ownerId).length;
 
     // If owner is not in members list, add 1 to count
     if (!ownerInMembers) {

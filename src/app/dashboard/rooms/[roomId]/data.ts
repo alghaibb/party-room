@@ -87,7 +87,8 @@ export const getRoomDetails = cache(async (roomId: string) => {
     const gameSessions = Array.isArray(room.gameSessions) ? room.gameSessions : [];
 
     // Check if user is a member of the room
-    const userMembership = members.find(member => member.userId === session.user.id);
+    type Member = typeof members[0];
+    const userMembership = members.find((member: Member) => member.userId === session.user.id);
     if (!userMembership && room.ownerId !== session.user.id) {
       // User is not a member and not the owner
       throw new Error("You are not a member of this room");
@@ -110,7 +111,7 @@ export const getRoomDetails = cache(async (roomId: string) => {
         username: room.owner.username,
         image: room.owner.image,
       },
-      members: members.map(member => ({
+      members: members.map((member: Member) => ({
         id: member.id,
         userId: member.userId,
         joinedAt: member.joinedAt,
@@ -171,7 +172,8 @@ export const getRoomMessages = cache(async (roomId: string) => {
     // Reverse to get chronological order (oldest to newest)
     messages.reverse();
 
-    const formattedMessages = messages.map(message => ({
+    type Message = typeof messages[0];
+    const formattedMessages = messages.map((message: Message) => ({
       id: message.id,
       content: message.content,
       userId: message.userId,
@@ -205,7 +207,8 @@ export const getAvailableGames = cache(async () => {
       ],
     });
 
-    return games.map(game => ({
+    type Game = typeof games[0];
+    return games.map((game: Game) => ({
       id: game.id,
       name: game.name,
       description: game.description,

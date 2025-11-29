@@ -4,9 +4,8 @@
  * Makes it easy to add new games and maintain game structure
  */
 
-import type { ComponentType } from "react";
 import type { Game } from "@/types/game";
-import { GAME_CATEGORIES } from "@/constants/game";
+import type { ComponentType } from "react";
 
 export interface GameComponentProps {
   members: Array<{

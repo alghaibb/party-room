@@ -40,7 +40,8 @@ export const roomMessagesService = {
       // Reverse to get chronological order (oldest to newest)
       messages.reverse();
 
-      return messages.map((message) => ({
+      type MessageResult = typeof messages[0];
+      return messages.map((message: MessageResult) => ({
         id: message.id,
         content: message.content,
         userId: message.userId,

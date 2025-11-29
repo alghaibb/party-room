@@ -96,8 +96,9 @@ export const roomService = {
         : [];
 
       // Check if user is a member of the room
+      type Member = typeof members[0];
       const userMembership = members.find(
-        (member) => member.userId === session.user.id
+        (member: Member) => member.userId === session.user.id
       );
       if (!userMembership && room.ownerId !== session.user.id) {
         throw new Error("You are not a member of this room");
@@ -120,7 +121,7 @@ export const roomService = {
           username: room.owner.username,
           image: room.owner.image,
         },
-        members: members.map((member) => ({
+        members: members.map((member: Member) => ({
           id: member.id,
           userId: member.userId,
           joinedAt: member.joinedAt,

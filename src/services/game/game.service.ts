@@ -22,7 +22,8 @@ export const gameService = {
         ],
       });
 
-      return games.map((game) => ({
+      type GameResult = typeof games[0];
+      return games.map((game: GameResult) => ({
         id: game.id,
         name: game.name,
         description: game.description,
@@ -36,6 +37,7 @@ export const gameService = {
     }
   }),
 };
+
 
 
 

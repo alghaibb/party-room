@@ -67,14 +67,15 @@ export const getActiveRooms = cache(async () => {
       take: ROOM_CONSTANTS.MAX_ACTIVE_ROOMS_DISPLAY,
     });
 
-    return activeRooms.map(room => ({
+    type Room = typeof activeRooms[0];
+    return activeRooms.map((room: Room) => ({
       id: room.id,
       name: room.name,
       description: room.description,
       code: room.code,
       maxPlayers: room.maxPlayers,
       currentPlayers: room._count.members,
-      onlineMembers: (Array.isArray(room.members) ? room.members : []).filter(m => m.isOnline).length,
+      onlineMembers: (Array.isArray(room.members) ? room.members : []).filter((m: Room["members"][0]) => m.isOnline).length,
       owner: {
         id: room.owner.id,
         name: room.owner.displayUsername || room.owner.name,
@@ -85,7 +86,7 @@ export const getActiveRooms = cache(async () => {
         name: room.gameSessions[0].game.name,
         category: room.gameSessions[0].game.category,
       } : null,
-      members: (Array.isArray(room.members) ? room.members : []).map(member => ({
+      members: (Array.isArray(room.members) ? room.members : []).map((member: Room["members"][0]) => ({
         name: member.user.displayUsername || member.user.name,
         username: member.user.username,
         image: member.user.image,
@@ -139,7 +140,8 @@ export const getUserRooms = cache(async () => {
       take: ROOM_CONSTANTS.MAX_RECENT_ROOMS,
     });
 
-    return userRooms.map(membership => ({
+    type Membership = typeof userRooms[0];
+    return userRooms.map((membership: Membership) => ({
       id: membership.room.id,
       name: membership.room.name,
       description: membership.room.description,
