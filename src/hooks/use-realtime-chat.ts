@@ -66,6 +66,7 @@ export function useRealtimeChat({
   const [roomDeleted, setRoomDeleted] = useState(false);
   const channelRef = useRef<RealtimeChannel | null>(null);
   const hasInitializedRef = useRef(false);
+  const subscriptionTimeoutRef = useRef<NodeJS.Timeout | undefined>(undefined);
 
   // Sync initialMessages when they become available (e.g., after React Query loads)
   useEffect(() => {
@@ -112,7 +113,6 @@ export function useRealtimeChat({
   // Set up Supabase Realtime channel
   useEffect(() => {
     let hasJoined = false;
-    let subscriptionTimeout: NodeJS.Timeout;
 
     // Ensure we have valid roomId and userId
     if (!roomId || !userId) {
@@ -178,7 +178,9 @@ export function useRealtimeChat({
       if (status === "SUBSCRIBED") {
         setIsConnected(true);
         hasJoined = true;
-        clearTimeout(subscriptionTimeout);
+        if (subscriptionTimeoutRef.current) {
+          clearTimeout(subscriptionTimeoutRef.current);
+        }
         // Broadcast user joined event
         roomChannel.send({
           type: "broadcast",
@@ -205,7 +207,9 @@ export function useRealtimeChat({
       if (roomChannel.state === "joined" && !hasJoined) {
         setIsConnected(true);
         hasJoined = true;
-        clearTimeout(subscriptionTimeout);
+        if (subscriptionTimeoutRef.current) {
+          clearTimeout(subscriptionTimeoutRef.current);
+        }
         // Broadcast user joined event
         roomChannel.send({
           type: "broadcast",
@@ -222,7 +226,7 @@ export function useRealtimeChat({
     setTimeout(checkChannelState, 100);
 
     // Set a timeout to detect if subscription never completes
-    subscriptionTimeout = setTimeout(() => {
+    subscriptionTimeoutRef.current = setTimeout(() => {
       if (!hasJoined) {
         console.warn("[Chat] Channel subscription taking longer than expected. Status:", roomChannel.state);
         checkChannelState();
@@ -251,7 +255,9 @@ export function useRealtimeChat({
 
     // Cleanup on unmount
     return () => {
-      clearTimeout(subscriptionTimeout);
+      if (subscriptionTimeoutRef.current) {
+        clearTimeout(subscriptionTimeoutRef.current);
+      }
       window.removeEventListener("beforeunload", handleBeforeUnload);
       if (roomChannel) {
         roomChannel.unsubscribe();

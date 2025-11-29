@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useMemo } from "react";
 import {
   Dialog,
   DialogContent,
@@ -35,12 +35,12 @@ export function ShareRoomDialog({
   roomName,
 }: ShareRoomDialogProps) {
   const [copied, setCopied] = useState(false);
-  const [inviteLink, setInviteLink] = useState("");
-
-  useEffect(() => {
+  
+  const inviteLink = useMemo(() => {
     if (typeof window !== "undefined") {
-      setInviteLink(`${window.location.origin}/join/${roomCode}`);
+      return `${window.location.origin}/join/${roomCode}`;
     }
+    return "";
   }, [roomCode]);
 
   const handleCopyLink = async () => {
