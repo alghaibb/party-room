@@ -3,8 +3,8 @@
  */
 
 import prisma from "@/lib/prisma";
-import { cache } from "react";
 import type { Game } from "@/types/game";
+import { cache } from "react";
 
 export const gameService = {
   /**
